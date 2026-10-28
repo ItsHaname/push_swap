@@ -1,0 +1,17 @@
+# Objets et binaires
+*.o
+*.a
+obj/
+push_swap
+checker
+
+# Outils de test
+checker_linux
+checker_Mac
+args.txt
+*.log
+
+# Divers
+.vscode/
+.DS_Store
+*.swp

@@ -51,34 +51,38 @@ Le sujet exige que **les deux membres contribuent réellement et comprennent
 l'intégralité du code**. Chacune est responsable de sa partie, mais tout le code est
 relu et expliqué à l'autre avant d'être fusionné (pull request + relecture croisée).
 
+La charge est **équilibrée** : chacune a une partie « fondations » et **deux vrais
+algorithmes** de tri. Les deux peuvent commencer en même temps — Sanae travaille
+d'abord sur un simple tableau d'entiers pendant que Hanane construit les piles.
+
 ### 🟦 Hanane — `haait-ba`
 
-**Fondations : parsing, piles et opérations**
+**Fondations : piles, opérations, parsing — algorithmes simple et medium**
 
 - [ ] `Makefile` (règles `$(NAME)`, `all`, `clean`, `fclean`, `re`, `bonus`, sans relink) et intégration de la `libft`
 - [ ] Structure de données des piles (liste chaînée ou tableau circulaire) + libération mémoire
+- [ ] Les 11 opérations (`sa` … `rrr`) avec affichage et compteur pour le bench
 - [ ] Parsing des arguments : nombres séparés ou dans une même chaîne (`"3 2 1"`)
 - [ ] Gestion d'erreurs → `Error\n` sur stderr : non-entiers, dépassement `INT_MIN`/`INT_MAX`, doublons, argument vide
-- [ ] Les 11 opérations (`sa` … `rrr`) avec affichage et compteur pour le bench
-- [ ] Indexation des valeurs (remplacer chaque nombre par son rang `0..n-1`)
-- [ ] Calcul du **désordre** (`compute_disorder`) avant toute opération
-- [ ] Tris spéciaux pour les petites tailles (2, 3 et 5 éléments)
 - [ ] **Stratégie simple — O(n²)** (`--simple`)
+- [ ] **Stratégie medium — O(n√n)** (`--medium`) : tri par chunks
+- [ ] Mode `--bench` (sur stderr) : désordre en %, stratégie + complexité, total et détail des opérations
+- [ ] **Bonus** : programme `checker` (lecture de stdin, `OK` / `KO` / `Error`)
 
 ### 🟪 Sanae — `<login_sanae>`
 
-**Algorithmes : medium, complex, adaptive et benchmark**
+**Fondations : analyse de l'entrée — algorithmes complex et adaptive**
 
 - [ ] Lecture des flags (`--simple`, `--medium`, `--complex`, `--adaptive`, `--bench`)
-- [ ] **Stratégie medium — O(n√n)** (`--medium`) : tri par chunks
+- [ ] Indexation des valeurs (remplacer chaque nombre par son rang `0..n-1`)
+- [ ] Calcul du **désordre** (`compute_disorder`) avant toute opération
+- [ ] Tris spéciaux pour les petites tailles (2, 3 et 5 éléments)
 - [ ] **Stratégie complexe — O(n log n)** (`--complex`) : radix sort
 - [ ] **Stratégie adaptative** (`--adaptive`, défaut) : sélection selon le désordre
-- [ ] Mode `--bench` (sur stderr) : désordre en %, stratégie + complexité, total et détail des opérations
-- [ ] Optimisations (fusion `ra`+`rb` → `rr`, suppression des paires inutiles `pa`/`pb`, etc.)
-- [ ] **Bonus** : programme `checker` (lecture de stdin, `OK` / `KO` / `Error`)
 
 ### 🤝 Ensemble
 
+- [ ] Optimisations pour atteindre les objectifs de performance (fusion `ra`+`rb` → `rr`, suppression des paires inutiles, etc.)
 - [ ] Choix des seuils de l'algorithme adaptatif et leur justification
 - [ ] Scripts de test : erreurs, cas limites, 100 / 500 nombres aléatoires, `checker_linux`
 - [ ] Vérification `norminette` et fuites mémoire (`valgrind`)

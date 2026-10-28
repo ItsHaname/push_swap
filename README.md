@@ -97,6 +97,42 @@ d'abord sur un simple tableau d'entiers pendant que Hanane construit les piles.
 
 ---
 
+## 🗂️ Structure du projet
+
+> Structure prévue — elle évoluera au fil du projet (la Norme impose au plus
+> 5 fonctions par fichier et 25 lignes par fonction).
+
+```
+push_swap/
+├── Makefile                  ← compile libft puis push_swap / checker      (Hanane)
+├── README.md
+├── includes/
+│   └── push_swap.h           ← structures et prototypes                    (ensemble)
+├── libft/                    ← notre libft (sources + Makefile)
+├── srcs/
+│   ├── main.c                ← lecture des flags, choix de la stratégie    (Sanae)
+│   ├── parsing.c             ← argv → nombres                              (Hanane)
+│   ├── parsing_utils.c       ← atoi avec dépassement, doublons             (Hanane)
+│   ├── stack.c               ← créer / ajouter / libérer la pile           (Hanane)
+│   ├── ops_swap.c            ← sa  sb  ss                                  (Hanane)
+│   ├── ops_push.c            ← pa  pb                                      (Hanane)
+│   ├── ops_rotate.c          ← ra  rb  rr                                  (Hanane)
+│   ├── ops_rev_rotate.c      ← rra rrb rrr                                 (Hanane)
+│   ├── sort_simple.c         ← --simple    O(n²)                           (Hanane)
+│   ├── sort_medium.c         ← --medium    O(n√n)                          (Hanane)
+│   ├── bench.c               ← --bench                                     (Hanane)
+│   ├── index.c               ← indexation des valeurs                      (Sanae)
+│   ├── disorder.c            ← calcul du désordre                          (Sanae)
+│   ├── sort_small.c          ← tris pour 2, 3 et 5 éléments                (Sanae)
+│   ├── sort_complex.c        ← --complex   O(n log n)                      (Sanae)
+│   └── sort_adaptive.c       ← --adaptive                                  (Sanae)
+└── bonus/
+    ├── checker_bonus.c       ← programme checker                           (ensemble)
+    └── checker_utils_bonus.c
+```
+
+---
+
 ## ⚙️ Instructions
 
 ### Compilation

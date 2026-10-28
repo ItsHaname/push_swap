@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by haait-ba, <login_sanae>.*
+*This project has been created as part of the 42 curriculum by haait-ba, sael-mgh.*
 
 # push_swap
 
@@ -69,7 +69,7 @@ d'abord sur un simple tableau d'entiers pendant que Hanane construit les piles.
 - [ ] Mode `--bench` (sur stderr) : désordre en %, stratégie + complexité, total et détail des opérations
 - [ ] **Bonus** : programme `checker` (lecture de stdin, `OK` / `KO` / `Error`)
 
-### 🟪 Sanae — `<login_sanae>`
+### 🟪 Sanae — `sael-mgh`
 
 **Fondations : analyse de l'entrée — algorithmes complex et adaptive**
 

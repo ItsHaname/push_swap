@@ -67,7 +67,6 @@ d'abord sur un simple tableau d'entiers pendant que Hanane construit les piles.
 - [ ] **Stratégie simple — O(n²)** (`--simple`)
 - [ ] **Stratégie medium — O(n√n)** (`--medium`) : tri par chunks
 - [ ] Mode `--bench` (sur stderr) : désordre en %, stratégie + complexité, total et détail des opérations
-- [ ] **Bonus** : programme `checker` (lecture de stdin, `OK` / `KO` / `Error`)
 
 ### 🟪 Sanae — `sael-mgh`
 
@@ -82,6 +81,7 @@ d'abord sur un simple tableau d'entiers pendant que Hanane construit les piles.
 
 ### 🤝 Ensemble
 
+- [ ] **Bonus** : programme `checker` (lecture de stdin, `OK` / `KO` / `Error`) — réutilise le parsing et les opérations
 - [ ] Optimisations pour atteindre les objectifs de performance (fusion `ra`+`rb` → `rr`, suppression des paires inutiles, etc.)
 - [ ] Choix des seuils de l'algorithme adaptatif et leur justification
 - [ ] Scripts de test : erreurs, cas limites, 100 / 500 nombres aléatoires, `checker_linux`

@@ -1,34 +1,43 @@
 #include "push_swap.h"
 
-static int	set_flag(char *arg, t_strategy *strategy, int *bench)
+int	is_flag(char *arg)
 {
-	if (!ft_strncmp(arg, "--simple", 9))
-		*strategy = SIMPLE;
-	else if (!ft_strncmp(arg, "--medium", 9))
-		*strategy = MEDIUM;
-	else if (!ft_strncmp(arg, "--complex", 10))
-		*strategy = COMPLEX;
-	else if (!ft_strncmp(arg, "--adaptive", 11))
-		*strategy = ADAPTIVE;
-	else if (!ft_strncmp(arg, "--bench", 8))
-		*bench = 1;
-	else
-		return (0);
-	return (1);
+	return (arg[0] == '-' && arg[1] == '-');
 }
 
-int	parse_flags(int argc, char **argv, t_strategy *strategy, int *bench)
+static void	set_strategy(t_ctx *ctx, t_strat strategy)
+{
+	if (ctx->strat_set)
+		error_exit(ctx);
+	ctx->strategy = strategy;
+	ctx->strat_set = 1;
+}
+
+static void	set_flag(t_ctx *ctx, char *arg)
+{
+	if (!ft_strncmp(arg, "--simple", 9))
+		set_strategy(ctx, STRAT_SIMPLE);
+	else if (!ft_strncmp(arg, "--medium", 9))
+		set_strategy(ctx, STRAT_MEDIUM);
+	else if (!ft_strncmp(arg, "--complex", 10))
+		set_strategy(ctx, STRAT_COMPLEX);
+	else if (!ft_strncmp(arg, "--adaptive", 11))
+		set_strategy(ctx, STRAT_ADAPTIVE);
+	else if (!ft_strncmp(arg, "--bench", 8))
+		ctx->bench = 1;
+	else
+		error_exit(ctx);
+}
+
+void	parse_flags(t_ctx *ctx, int argc, char **argv)
 {
 	int	i;
 
-	*strategy = ADAPTIVE;
-	*bench = 0;
 	i = 1;
-	while (i < argc && argv[i][0] == '-' && argv[i][1] == '-')
+	while (i < argc)
 	{
-		if (!set_flag(argv[i], strategy, bench))
-			return (-1);
+		if (is_flag(argv[i]))
+			set_flag(ctx, argv[i]);
 		i++;
 	}
-	return (i);
 }

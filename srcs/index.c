@@ -1,38 +1,35 @@
-#include <stdlib.h>
-#include <stdio.h>
-int     *index_values(int *tab, int size)
+#include "push_swap.h"
+
+static int	rank_of(t_stack *s, int i)
 {
-    int i;
-    int j;
-    int count;
-    i = 0;
-    int *index = malloc((size)*sizeof(int));
-    if(!index)
-        return NULL;
-    while(i < size)
-    {
-        count = 0;
-        j = 0;
-        while(j < size)
-        {
-            if(tab[j] < tab[i])
-                count++;
-            j++;
-        }
-        index[i] = count;
-        i++;
-    }
-    return index;
+	int	j;
+	int	count;
+
+	count = 0;
+	j = 0;
+	while (j < s->size)
+	{
+		if (s->val[j] < s->val[i])
+			count++;
+		j++;
+	}
+	return (count);
 }
-// int main(void)
-// {
-//         int tab[] = {2, 1, 0};
-//         int *idx = index_values(tab, 3);
-//         int i = 0;
-//         while(i < 3)
-//         {
-//             printf("%d",idx[i]);
-//             i++;
-//         }
-//         free(idx);
-// }
+
+void	assign_index(t_ctx *ctx)
+{
+	int	*index;
+	int	i;
+
+	index = malloc(sizeof(int) * ctx->a.size);
+	if (!index)
+		error_exit(ctx);
+	i = 0;
+	while (i < ctx->a.size)
+	{
+		index[i] = rank_of(&ctx->a, i);
+		i++;
+	}
+	free(ctx->a.val);
+	ctx->a.val = index;
+}

@@ -13,8 +13,9 @@ HEADER		= includes/push_swap.h
 
 # files shared by push_swap and checker (everything except main.c)
 COMMON		= srcs/parsing.c srcs/parsing_utils.c srcs/stack.c \
+			  srcs/flags.c \
 			  srcs/ops_swap.c srcs/ops_push.c srcs/ops_rotate.c \
-			  srcs/ops_rev_rotate.c \
+			  srcs/ops_rev_rotate.c srcs/sort_utils.c \
 			  srcs/sort_simple.c srcs/sort_medium.c srcs/bench.c \
 			  srcs/index.c srcs/disorder.c srcs/sort_small.c \
 			  srcs/sort_complex.c srcs/sort_adaptive.c

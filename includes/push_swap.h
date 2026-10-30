@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/30 16:09:46 by haait-ba          #+#    #+#             */
+/*   Updated: 2026/10/30 16:09:46 by haait-ba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 
@@ -77,6 +89,8 @@ int		count_numbers(t_ctx *ctx, int argc, char **argv);
 void	parse_numbers(t_ctx *ctx, int argc, char **argv);
 int		safe_atoi(char *s, int *ok);
 int		has_duplicates(t_stack *s);
+int		count_words(char *str, char c);
+void	free_split(char **tab);
 
 /* ============ PRIMITIVES, NO OUTPUT  (Hanane) ================ */
 /* also used by the bonus checker */

@@ -40,53 +40,57 @@ int	safe_atoi(char *s, int *ok)
 	*ok = 1;
 	return ((int)(res * sign));
 }
-int		has_duplicates(t_stack *s)
+
+int	has_duplicates(t_stack *s)
 {
-	int		i;
-	int		j;
+	int	i;
+	int	j;
 
 	i = 0;
-	while(i < s->size - 1)
+	while (i < s->size - 1)
 	{
 		j = i + 1;
-		while(j <s->size)
+		while (j < s->size)
 		{
 			if (s->val[i] == s->val[j])
-				return 1;
+				return (1);
 			j++;
 		}
 		i++;
 	}
-	return 0;
+	return (0);
 }
-int		count_words(char *str,char c)
+
+int	count_words(char *str, char c)
 {
-	int		i;
-	int		count;
+	int	i;
+	int	count;
 
 	i = 0;
 	count = 0;
-	while(str[i])
+	while (str[i])
 	{
 		if (str[i] == c)
 			i++;
 		else
 		{
 			count++;
-			while(str[i]&& str[i] != c)
+			while (str[i] && str[i] != c)
 				i++;
 		}
 	}
-
+	return (count);
 }
-void   free_all(char **tab,int colonne)
+
+void	free_split(char **tab)
 {
-	while(colonne > 0)
+	int	i;
+
+	i = 0;
+	while (tab[i])
 	{
-		colonne--;
-		free(tab[colonne]);
+		free(tab[i]);
+		i++;
 	}
 	free(tab);
-
 }
-

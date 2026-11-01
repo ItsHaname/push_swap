@@ -12,13 +12,13 @@
 
 #include "push_swap.h"
 
-void	sort_simple(t_cts *ctx)
+void	sort_simple(t_ctx *ctx)
 {
-	while(ctx->a.size > 0 && !is_sorted(&ctx->a))
+	while (ctx->a.size > 0 && !is_sorted(&ctx->a))
 	{
-		bring_to_top_a(ctx,find_min_pos(&ctx->a));
+		bring_to_top_a(ctx, find_min_pos(&ctx->a));
 		pb(ctx);
 	}
-	while(ctx->b.size > 0)
+	while (ctx->b.size > 0)
 		pa(ctx);
 }

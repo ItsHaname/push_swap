@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   disorder.c                                         :+:      :+:    :+:   */
+/*   05_index.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sael-mgh <sael-mgh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,42 +12,37 @@
 
 #include "push_swap.h"
 
-long	compute_disorder(t_stack *s)
+static int	rank_of(t_stack *s, int i)
 {
-	int		i;
-	int		j;
-	long	inversions;
-	long	pairs;
+	int	j;
+	int	count;
 
-	if (s->size < 2)
-		return (0);
-	inversions = 0;
-	i = 0;
-	while (i < s->size)
+	count = 0;
+	j = 0;
+	while (j < s->size)
 	{
-		j = i + 1;
-		while (j < s->size)
-		{
-			if (s->val[i] > s->val[j])
-				inversions++;
-			j++;
-		}
-		i++;
+		if (s->val[(s->top + j) % s->cap] < s->val[(s->top + i) % s->cap])
+			count++;
+		j++;
 	}
-	pairs = (long)s->size * (s->size - 1) / 2;
-	return (inversions * 10000 / pairs);
+	return (count);
 }
 
-int	is_sorted(t_stack *s)
+void	assign_index(t_ctx *ctx)
 {
+	int	*index;
 	int	i;
 
+	index = malloc(sizeof(int) * ctx->a.size);
+	if (!index)
+		error_exit(ctx);
 	i = 0;
-	while (i < s->size - 1)
+	while (i < ctx->a.size)
 	{
-		if (s->val[i] > s->val[i + 1])
-			return (0);
+		index[i] = rank_of(&ctx->a, i);
 		i++;
 	}
-	return (1);
+	free(ctx->a.val);
+	ctx->a.val = index;
+	ctx->a.top = 0;
 }

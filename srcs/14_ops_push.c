@@ -1,55 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ops_rotate.c                                       :+:      :+:    :+:   */
+/*   14_ops_push.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/31 00:25:57 by haait-ba          #+#    #+#             */
-/*   Updated: 2026/10/31 00:25:57 by haait-ba         ###   ########.fr       */
+/*   Created: 2026/10/30 23:58:27 by haait-ba          #+#    #+#             */
+/*   Updated: 2026/10/30 23:58:27 by haait-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	rotate(t_stack *s)
+void	push(t_stack *from, t_stack *to)
 {
-	int	i;
 	int	x;
 
-	if (s->size < 2)
+	if (from->size == 0)
 		return ;
-	x = s->val[0];
-	i = 0;
-	while (i < s->size - 1)
-	{
-		s->val[i] = s->val[i + 1];
-		i++;
-	}
-	s->val[s->size - 1] = x;
+	x = from->val[from->top];
+	from->top = (from->top + 1) % from->cap;
+	from->size--;
+	to->top = (to->top - 1 + to->cap) % to->cap;
+	to->val[to->top] = x;
+	to->size++;
 }
 
-void	ra(t_ctx *ctx)
+void	pa(t_ctx *ctx)
 {
-	rotate(&ctx->a);
-	write(1, "ra\n", 3);
-	ctx->counts[OP_RA]++;
+	push(&ctx->b, &ctx->a);
+	write(1, "pa\n", 3);
+	ctx->counts[OP_PA]++;
 	ctx->total++;
 }
 
-void	rb(t_ctx *ctx)
+void	pb(t_ctx *ctx)
 {
-	rotate(&ctx->b);
-	write(1, "rb\n", 3);
-	ctx->counts[OP_RB]++;
-	ctx->total++;
-}
-
-void	rr(t_ctx *ctx)
-{
-	rotate(&ctx->a);
-	rotate(&ctx->b);
-	write(1, "rr\n", 3);
-	ctx->counts[OP_RR]++;
+	push(&ctx->a, &ctx->b);
+	write(1, "pb\n", 3);
+	ctx->counts[OP_PB]++;
 	ctx->total++;
 }

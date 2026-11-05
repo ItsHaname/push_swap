@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sort_small.c                                       :+:      :+:    :+:   */
+/*   11_sort_complex.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,48 +12,39 @@
 
 #include "push_swap.h"
 
-static void	sort_three(t_ctx *ctx)
+static int	max_bits(int n)
 {
-	int	x;
-	int	y;
-	int	z;
+	int	bits;
 
-	x = ctx->a.val[0];
-	y = ctx->a.val[1];
-	z = ctx->a.val[2];
-	if (x > y && y < z && x < z)
-		sa(ctx);
-	else if (x > y && y > z)
-	{
-		sa(ctx);
-		rra(ctx);
-	}
-	else if (x > y && y < z && x > z)
-		ra(ctx);
-	else if (x < y && y > z && x < z)
-	{
-		sa(ctx);
-		ra(ctx);
-	}
-	else if (x < y && y > z && x > z)
-		rra(ctx);
+	bits = 0;
+	while (((n - 1) >> bits) != 0)
+		bits++;
+	return (bits);
 }
 
-void	sort_small(t_ctx *ctx)
+void	sort_complex(t_ctx *ctx)
 {
-	if (is_sorted(&ctx->a))
-		return ;
-	if (ctx->a.size == 2)
+	int	n;
+	int	bit;
+	int	bits;
+	int	j;
+
+	n = ctx->a.size;
+	bits = max_bits(n);
+	bit = 0;
+	while (bit < bits && !is_sorted(&ctx->a))
 	{
-		sa(ctx);
-		return ;
+		j = 0;
+		while (j < n)
+		{
+			if (((ctx->a.val[ctx->a.top] >> bit) & 1) == 0)
+				pb(ctx);
+			else
+				ra(ctx);
+			j++;
+		}
+		while (ctx->b.size > 0)
+			pa(ctx);
+		bit++;
 	}
-	while (ctx->a.size > 3)
-	{
-		bring_to_top_a(ctx, find_min_pos(&ctx->a));
-		pb(ctx);
-	}
-	sort_three(ctx);
-	while (ctx->b.size > 0)
-		pa(ctx);
 }

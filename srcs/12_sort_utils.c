@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sort_utils.c                                       :+:      :+:    :+:   */
+/*   12_sort_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -23,7 +23,7 @@ int	find_min_pos(t_stack *s)
 	i = 1;
 	while (i < s->size)
 	{
-		if (s->val[i] < s->val[pos])
+		if (s->val[(s->top + i) % s->cap] < s->val[(s->top + pos) % s->cap])
 			pos = i;
 		i++;
 	}
@@ -41,7 +41,7 @@ int	find_max_pos(t_stack *s)
 	i = 1;
 	while (i < s->size)
 	{
-		if (s->val[i] > s->val[pos])
+		if (s->val[(s->top + i) % s->cap] > s->val[(s->top + pos) % s->cap])
 			pos = i;
 		i++;
 	}

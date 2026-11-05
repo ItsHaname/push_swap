@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing_utils.c                                    :+:      :+:    :+:   */
+/*   04_parsing_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -52,7 +52,7 @@ int	has_duplicates(t_stack *s)
 		j = i + 1;
 		while (j < s->size)
 		{
-			if (s->val[i] == s->val[j])
+			if (s->val[(s->top + i) % s->cap] == s->val[(s->top + j) % s->cap])
 				return (1);
 			j++;
 		}

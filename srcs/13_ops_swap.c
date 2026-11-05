@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ops_swap.c                                         :+:      :+:    :+:   */
+/*   13_ops_swap.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -15,12 +15,14 @@
 void	swap(t_stack *s)
 {
 	int	tmp;
+	int	second;
 
 	if (s->size >= 2)
 	{
-		tmp = s->val[0];
-		s->val[0] = s->val[1];
-		s->val[1] = tmp;
+		second = (s->top + 1) % s->cap;
+		tmp = s->val[s->top];
+		s->val[s->top] = s->val[second];
+		s->val[second] = tmp;
 	}
 }
 

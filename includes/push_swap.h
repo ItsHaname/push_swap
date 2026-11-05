@@ -51,11 +51,14 @@ typedef enum e_strat
 
 /* ========================= STRUCTS =========================== */
 
-/* val[0] = top of the stack, val[size - 1] = bottom */
+/* circular buffer: logical element i is val[(top + i) % cap]
+** i = 0 is the top of the stack, i = size - 1 is the bottom */
 typedef struct s_stack
 {
 	int		*val;
 	int		size;
+	int		cap;
+	int		top;
 }	t_stack;
 
 typedef struct s_ctx

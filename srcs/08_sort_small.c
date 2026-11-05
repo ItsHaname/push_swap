@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sort_adaptive.c                                    :+:      :+:    :+:   */
+/*   08_sort_small.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,39 +12,48 @@
 
 #include "push_swap.h"
 
-void	sort_adaptive(t_ctx *ctx)
+static void	sort_three(t_ctx *ctx)
 {
-	if (ctx->a.size <= 5)
+	int	x;
+	int	y;
+	int	z;
+
+	x = ctx->a.val[ctx->a.top];
+	y = ctx->a.val[(ctx->a.top + 1) % ctx->a.cap];
+	z = ctx->a.val[(ctx->a.top + 2) % ctx->a.cap];
+	if (x > y && y < z && x < z)
+		sa(ctx);
+	else if (x > y && y > z)
 	{
-		ctx->used = STRAT_SIMPLE;
-		sort_small(ctx);
+		sa(ctx);
+		rra(ctx);
 	}
-	else if (ctx->disorder < LOW_DISORDER)
+	else if (x > y && y < z && x > z)
+		ra(ctx);
+	else if (x < y && y > z && x < z)
 	{
-		ctx->used = STRAT_SIMPLE;
-		sort_simple(ctx);
+		sa(ctx);
+		ra(ctx);
 	}
-	else if (ctx->disorder < HIGH_DISORDER)
-	{
-		ctx->used = STRAT_MEDIUM;
-		sort_medium(ctx);
-	}
-	else
-	{
-		ctx->used = STRAT_COMPLEX;
-		sort_complex(ctx);
-	}
+	else if (x < y && y > z && x > z)
+		rra(ctx);
 }
 
-void	run_strategy(t_ctx *ctx)
+void	sort_small(t_ctx *ctx)
 {
-	ctx->used = ctx->strategy;
-	if (ctx->strategy == STRAT_SIMPLE)
-		sort_simple(ctx);
-	else if (ctx->strategy == STRAT_MEDIUM)
-		sort_medium(ctx);
-	else if (ctx->strategy == STRAT_COMPLEX)
-		sort_complex(ctx);
-	else
-		sort_adaptive(ctx);
+	if (is_sorted(&ctx->a))
+		return ;
+	if (ctx->a.size == 2)
+	{
+		sa(ctx);
+		return ;
+	}
+	while (ctx->a.size > 3)
+	{
+		bring_to_top_a(ctx, find_min_pos(&ctx->a));
+		pb(ctx);
+	}
+	sort_three(ctx);
+	while (ctx->b.size > 0)
+		pa(ctx);
 }

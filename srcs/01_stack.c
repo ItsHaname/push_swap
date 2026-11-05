@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   stack.c                                            :+:      :+:    :+:   */
+/*   01_stack.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -18,8 +18,12 @@ void	init_ctx(t_ctx *ctx)
 
 	ctx->a.val = NULL;
 	ctx->a.size = 0;
+	ctx->a.cap = 0;
+	ctx->a.top = 0;
 	ctx->b.val = NULL;
 	ctx->b.size = 0;
+	ctx->b.cap = 0;
+	ctx->b.top = 0;
 	ctx->total = 0;
 	i = 0;
 	while (i < OP_COUNT)
@@ -55,4 +59,6 @@ void	init_stacks(t_ctx *ctx, int n)
 	ctx->b.val = malloc(sizeof(int) * n);
 	if (ctx->a.val == NULL || ctx->b.val == NULL)
 		error_exit(ctx);
+	ctx->a.cap = n;
+	ctx->b.cap = n;
 }

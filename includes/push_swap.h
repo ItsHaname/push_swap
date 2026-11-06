@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/30 16:09:46 by haait-ba          #+#    #+#             */
+/*   Updated: 2026/10/30 16:09:46 by haait-ba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 
@@ -39,11 +51,14 @@ typedef enum e_strat
 
 /* ========================= STRUCTS =========================== */
 
-/* val[0] = top of the stack, val[size - 1] = bottom */
+/* circular buffer: logical element i is val[(top + i) % cap]
+** i = 0 is the top of the stack, i = size - 1 is the bottom */
 typedef struct s_stack
 {
 	int		*val;
 	int		size;
+	int		cap;
+	int		top;
 }	t_stack;
 
 typedef struct s_ctx
@@ -77,6 +92,8 @@ int		count_numbers(t_ctx *ctx, int argc, char **argv);
 void	parse_numbers(t_ctx *ctx, int argc, char **argv);
 int		safe_atoi(char *s, int *ok);
 int		has_duplicates(t_stack *s);
+int		count_words(char *str, char c);
+void	free_split(char **tab);
 
 /* ============ PRIMITIVES, NO OUTPUT  (Hanane) ================ */
 /* also used by the bonus checker */

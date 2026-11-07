@@ -26,13 +26,13 @@ int	main(int argc, char **argv)
 		return (0);
 	init_stacks(&ctx, n);
 	parse_numbers(&ctx, argc, argv);
-	if (has_duplicates(&ctx.a))
+	if (has_duplicates(&ctx.a) == 1)
 		error_exit(&ctx);
 	assign_index(&ctx);
 	ctx.disorder = compute_disorder(&ctx.a);
-	if (!is_sorted(&ctx.a))
+	if (is_sorted(&ctx.a) == 0)
 		run_strategy(&ctx);
-	if (ctx.bench)
+	if (ctx.bench == 1)
 		print_bench(&ctx);
 	free_ctx(&ctx);
 	return (0);

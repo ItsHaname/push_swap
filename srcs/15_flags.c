@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   02_flags.c                                         :+:      :+:    :+:   */
+/*   15_flags.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sael-mgh <sael-mgh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,12 +14,14 @@
 
 int	is_flag(char *arg)
 {
-	return (arg[0] == '-' && arg[1] == '-');
+	if (arg[0] == '-' && arg[1] == '-')
+		return (1);
+	return (0);
 }
 
 static void	set_strategy(t_ctx *ctx, t_strat strategy)
 {
-	if (ctx->strat_set)
+	if (ctx->strat_set == 1)
 		error_exit(ctx);
 	ctx->strategy = strategy;
 	ctx->strat_set = 1;
@@ -27,15 +29,15 @@ static void	set_strategy(t_ctx *ctx, t_strat strategy)
 
 static void	set_flag(t_ctx *ctx, char *arg)
 {
-	if (!ft_strncmp(arg, "--simple", 9))
+	if (ft_strncmp(arg, "--simple", 9) == 0)
 		set_strategy(ctx, STRAT_SIMPLE);
-	else if (!ft_strncmp(arg, "--medium", 9))
+	else if (ft_strncmp(arg, "--medium", 9) == 0)
 		set_strategy(ctx, STRAT_MEDIUM);
-	else if (!ft_strncmp(arg, "--complex", 10))
+	else if (ft_strncmp(arg, "--complex", 10) == 0)
 		set_strategy(ctx, STRAT_COMPLEX);
-	else if (!ft_strncmp(arg, "--adaptive", 11))
+	else if (ft_strncmp(arg, "--adaptive", 11) == 0)
 		set_strategy(ctx, STRAT_ADAPTIVE);
-	else if (!ft_strncmp(arg, "--bench", 8))
+	else if (ft_strncmp(arg, "--bench", 8) == 0)
 		ctx->bench = 1;
 	else
 		error_exit(ctx);

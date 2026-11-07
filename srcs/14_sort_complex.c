@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   07_sort_adaptive.c                                 :+:      :+:    :+:   */
+/*   14_sort_complex.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,39 +12,39 @@
 
 #include "push_swap.h"
 
-void	sort_adaptive(t_ctx *ctx)
+static int	max_bits(int n)
 {
-	if (ctx->a.size <= 5)
-	{
-		ctx->used = STRAT_SIMPLE;
-		sort_small(ctx);
-	}
-	else if (ctx->disorder < LOW_DISORDER)
-	{
-		ctx->used = STRAT_SIMPLE;
-		sort_simple(ctx);
-	}
-	else if (ctx->disorder < HIGH_DISORDER)
-	{
-		ctx->used = STRAT_MEDIUM;
-		sort_medium(ctx);
-	}
-	else
-	{
-		ctx->used = STRAT_COMPLEX;
-		sort_complex(ctx);
-	}
+	int	bits;
+
+	bits = 0;
+	while (((n - 1) >> bits) != 0)
+		bits++;
+	return (bits);
 }
 
-void	run_strategy(t_ctx *ctx)
+void	sort_complex(t_ctx *ctx)
 {
-	ctx->used = ctx->strategy;
-	if (ctx->strategy == STRAT_SIMPLE)
-		sort_simple(ctx);
-	else if (ctx->strategy == STRAT_MEDIUM)
-		sort_medium(ctx);
-	else if (ctx->strategy == STRAT_COMPLEX)
-		sort_complex(ctx);
-	else
-		sort_adaptive(ctx);
+	int	n;
+	int	bit;
+	int	bits;
+	int	j;
+
+	n = ctx->a.size;
+	bits = max_bits(n);
+	bit = 0;
+	while (bit < bits && !is_sorted(&ctx->a))
+	{
+		j = 0;
+		while (j < n)
+		{
+			if (((ctx->a.val[ctx->a.top] >> bit) & 1) == 0)
+				pb(ctx);
+			else
+				ra(ctx);
+			j++;
+		}
+		while (ctx->b.size > 0)
+			pa(ctx);
+		bit++;
+	}
 }

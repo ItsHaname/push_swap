@@ -1,52 +1,51 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   13_ops_swap.c                                      :+:      :+:    :+:   */
+/*   06_ops_rotate.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/30 23:37:28 by haait-ba          #+#    #+#             */
-/*   Updated: 2026/10/30 23:37:28 by haait-ba         ###   ########.fr       */
+/*   Created: 2026/10/31 00:25:57 by haait-ba          #+#    #+#             */
+/*   Updated: 2026/10/31 00:25:57 by haait-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	swap(t_stack *s)
+void	rotate(t_stack *s)
 {
-	int	tmp;
-	int	second;
+	int	x;
+	int	bottom;
 
-	if (s->size >= 2)
-	{
-		second = (s->top + 1) % s->cap;
-		tmp = s->val[s->top];
-		s->val[s->top] = s->val[second];
-		s->val[second] = tmp;
-	}
+	if (s->size < 2)
+		return ;
+	x = s->val[s->top];
+	s->top = (s->top + 1) % s->cap;
+	bottom = (s->top + s->size - 1) % s->cap;
+	s->val[bottom] = x;
 }
 
-void	sa(t_ctx *ctx)
+void	ra(t_ctx *ctx)
 {
-	swap(&ctx->a);
-	write(1, "sa\n", 3);
-	ctx->counts[OP_SA]++;
+	rotate(&ctx->a);
+	write(1, "ra\n", 3);
+	ctx->counts[OP_RA]++;
 	ctx->total++;
 }
 
-void	sb(t_ctx *ctx)
+void	rb(t_ctx *ctx)
 {
-	swap(&ctx->b);
-	write(1, "sb\n", 3);
-	ctx->counts[OP_SB]++;
+	rotate(&ctx->b);
+	write(1, "rb\n", 3);
+	ctx->counts[OP_RB]++;
 	ctx->total++;
 }
 
-void	ss(t_ctx *ctx)
+void	rr(t_ctx *ctx)
 {
-	swap(&ctx->a);
-	swap(&ctx->b);
-	write(1, "ss\n", 3);
-	ctx->counts[OP_SS]++;
+	rotate(&ctx->a);
+	rotate(&ctx->b);
+	write(1, "rr\n", 3);
+	ctx->counts[OP_RR]++;
 	ctx->total++;
 }

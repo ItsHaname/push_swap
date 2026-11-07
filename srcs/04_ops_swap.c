@@ -1,43 +1,52 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   14_ops_push.c                                      :+:      :+:    :+:   */
+/*   04_ops_swap.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/30 23:58:27 by haait-ba          #+#    #+#             */
-/*   Updated: 2026/10/30 23:58:27 by haait-ba         ###   ########.fr       */
+/*   Created: 2026/10/30 23:37:28 by haait-ba          #+#    #+#             */
+/*   Updated: 2026/10/30 23:37:28 by haait-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	push(t_stack *from, t_stack *to)
+void	swap(t_stack *s)
 {
-	int	x;
+	int	tmp;
+	int	second;
 
-	if (from->size == 0)
-		return ;
-	x = from->val[from->top];
-	from->top = (from->top + 1) % from->cap;
-	from->size--;
-	to->top = (to->top - 1 + to->cap) % to->cap;
-	to->val[to->top] = x;
-	to->size++;
+	if (s->size >= 2)
+	{
+		second = (s->top + 1) % s->cap;
+		tmp = s->val[s->top];
+		s->val[s->top] = s->val[second];
+		s->val[second] = tmp;
+	}
 }
 
-void	pa(t_ctx *ctx)
+void	sa(t_ctx *ctx)
 {
-	push(&ctx->b, &ctx->a);
-	write(1, "pa\n", 3);
-	ctx->counts[OP_PA]++;
+	swap(&ctx->a);
+	write(1, "sa\n", 3);
+	ctx->counts[OP_SA]++;
 	ctx->total++;
 }
 
-void	pb(t_ctx *ctx)
+void	sb(t_ctx *ctx)
 {
-	push(&ctx->a, &ctx->b);
-	write(1, "pb\n", 3);
-	ctx->counts[OP_PB]++;
+	swap(&ctx->b);
+	write(1, "sb\n", 3);
+	ctx->counts[OP_SB]++;
+	ctx->total++;
+}
+
+void	ss(t_ctx *ctx)
+{
+	swap(&ctx->a);
+	swap(&ctx->b);
+	write(1, "ss\n", 3);
+	ctx->counts[OP_SS]++;
 	ctx->total++;
 }

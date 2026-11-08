@@ -7,132 +7,47 @@
 ![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
 ![42](https://img.shields.io/badge/42-push__swap-000000?style=for-the-badge&logo=42&logoColor=white)
 ![Norminette](https://img.shields.io/badge/Norminette-OK-00BABC?style=for-the-badge)
-![Équipe](https://img.shields.io/badge/Équipe-2%20personnes-00BABC?style=for-the-badge)
+![Team](https://img.shields.io/badge/Team-2%20learners-00BABC?style=for-the-badge)
 
 ---
 
 ## 📖 Description
 
-**push_swap** est un projet d'algorithmique du cursus 42, réalisé en binôme.
+**push_swap** is an algorithm project from the 42 curriculum, done by a team of two.
 
-On dispose de deux piles, `a` et `b`. Au départ, `a` contient une liste d'entiers
-(positifs et/ou négatifs, sans doublon) et `b` est vide. Le programme doit afficher sur
-la sortie standard **la plus petite suite d'opérations possible** qui trie `a` par ordre
-croissant (le plus petit en haut), en n'utilisant que les opérations suivantes :
+We have two stacks, `a` and `b`. At the start, `a` holds a list of distinct integers
+(negative and/or positive) and `b` is empty. The program must print on the standard
+output **the shortest possible sequence of operations** that sorts `a` in ascending
+order (smallest on top), using only these operations:
 
-| Opération | Effet |
+| Operation | Effect |
 |:---:|---|
-| `sa` / `sb` / `ss` | Échange les 2 premiers éléments de `a` / `b` / les deux |
-| `pa` / `pb` | Prend le sommet de `b` et le met sur `a` / l'inverse |
-| `ra` / `rb` / `rr` | Rotation vers le haut (le premier devient le dernier) |
-| `rra` / `rrb` / `rrr` | Rotation vers le bas (le dernier devient le premier) |
+| `sa` / `sb` / `ss` | Swap the first 2 elements of `a` / `b` / both |
+| `pa` / `pb` | Take the top of `b` and put it on `a` / the opposite |
+| `ra` / `rb` / `rr` | Rotate up (the first element becomes the last) on `a` / `b` / both |
+| `rra` / `rrb` / `rrr` | Rotate down (the last element becomes the first) on `a` / `b` / both |
 
-Le binaire embarque **quatre stratégies** de tri, choisies à l'exécution :
+The binary embeds **four sorting strategies**, selected at runtime:
 
-| Flag | Stratégie | Complexité (en nombre d'opérations) |
+| Flag | Strategy | Complexity (in number of operations) |
 |---|---|:---:|
-| `--simple` | Tri simple (extraction du min / sélection) | O(n²) |
-| `--medium` | Tri par chunks « butterfly » (fenêtre ≈ 1,5·√n) | O(n√n) |
-| `--complex` | Quicksort à deux pivots sur les deux piles | O(n log n) |
-| `--adaptive` *(défaut)* | Choix selon le **désordre** mesuré | dépend du régime |
+| `--simple` | Min extraction (selection sort adaptation) | O(n²) |
+| `--medium` | Chunk-based "butterfly" sort (window ≈ 1.5·√n) | O(n√n) |
+| `--complex` | Quicksort with two pivots, on both stacks | O(n log n) |
+| `--adaptive` *(default)* | Picks a method from the measured **disorder** | depends on the regime |
 
-### Objectifs de performance
+All complexities in this README are measured in **number of push_swap operations
+generated**, as required by the subject, not in classic array-sort time.
 
-| Taille | Minimum | Bon | Excellent |
-|:---:|:---:|:---:|:---:|
-| 100 nombres | < 2000 | < 1500 | < 700 |
-| 500 nombres | < 12000 | < 8000 | < 5500 |
+### Main features
 
----
-
-## 👥 Répartition des tâches
-
-Le sujet exige que **les deux membres contribuent réellement et comprennent
-l'intégralité du code**. Chacune est responsable de sa partie, mais tout le code est
-relu et expliqué à l'autre avant d'être fusionné (pull request + relecture croisée).
-
-La charge est **équilibrée** : chacune a une partie « fondations » et **deux vrais
-algorithmes** de tri. Les deux peuvent commencer en même temps — Sanae travaille
-d'abord sur un simple tableau d'entiers pendant que Hanane construit les piles.
-
-### 🟦 Hanane — `haait-ba`
-
-**Fondations : piles, opérations, parsing — algorithmes simple et medium**
-
-- [ ] `Makefile` (règles `$(NAME)`, `all`, `clean`, `fclean`, `re`, `bonus`, sans relink) et intégration de la `libft`
-- [ ] Structure de données des piles (liste chaînée ou tableau circulaire) + libération mémoire
-- [ ] Les 11 opérations (`sa` … `rrr`) avec affichage et compteur pour le bench
-- [ ] Parsing des arguments : nombres séparés ou dans une même chaîne (`"3 2 1"`)
-- [ ] Gestion d'erreurs → `Error\n` sur stderr : non-entiers, dépassement `INT_MIN`/`INT_MAX`, doublons, argument vide
-- [ ] **Stratégie simple — O(n²)** (`--simple`)
-- [ ] **Stratégie medium — O(n√n)** (`--medium`) : tri par chunks
-- [ ] Mode `--bench` (sur stderr) : désordre en %, stratégie + complexité, total et détail des opérations
-
-### 🟪 Sanae — `sael-mgh`
-
-**Fondations : analyse de l'entrée — algorithmes complex et adaptive**
-
-- [ ] Lecture des flags (`--simple`, `--medium`, `--complex`, `--adaptive`, `--bench`)
-- [ ] Indexation des valeurs (remplacer chaque nombre par son rang `0..n-1`)
-- [ ] Calcul du **désordre** (`compute_disorder`) avant toute opération
-- [ ] Tris spéciaux pour les petites tailles (2, 3 et 5 éléments)
-- [ ] **Stratégie complexe — O(n log n)** (`--complex`) : quicksort à deux pivots
-- [ ] **Stratégie adaptative** (`--adaptive`, défaut) : sélection selon le désordre
-
-### 🤝 Ensemble
-
-- [ ] **Bonus** : programme `checker` (lecture de stdin, `OK` / `KO` / `Error`) — réutilise le parsing et les opérations
-- [ ] Optimisations pour atteindre les objectifs de performance (fusion `ra`+`rb` → `rr`, suppression des paires inutiles, etc.)
-- [ ] Choix des seuils de l'algorithme adaptatif et leur justification
-- [ ] Scripts de test : erreurs, cas limites, 100 / 500 nombres aléatoires, `checker_linux`
-- [ ] Vérification `norminette` et fuites mémoire (`valgrind`)
-- [ ] Rédaction de ce README (algorithmes, justifications, ressources)
-- [ ] Préparation de la soutenance : chacune doit savoir expliquer **tout** le code
-
-### Organisation Git
-
-- `main` : version stable, toujours compilable
-- Une branche par tâche : `hanane/parsing`, `sanae/radix`, …
-- Fusion dans `main` uniquement via pull request relue par l'autre
-
----
-
-## 🗂️ Structure du projet
-
-> Structure prévue — elle évoluera au fil du projet (la Norme impose au plus
-> 5 fonctions par fichier et 25 lignes par fonction).
-
-```
-push_swap/
-├── Makefile                  ← compile libft puis push_swap / checker      (Hanane)
-├── README.md
-├── includes/
-│   └── push_swap.h           ← structures et prototypes                    (ensemble)
-├── libft/                    ← notre libft (sources + Makefile)
-├── srcs/
-│   ├── 00_main.c             ← enchaîne parsing, tri et bench              (Sanae)
-│   ├── 01_stack.c            ← créer / ajouter / libérer la pile           (Hanane)
-│   ├── 02_parsing.c          ← argv → nombres                              (Hanane)
-│   ├── 03_parsing_utils.c    ← atoi avec dépassement, doublons             (Hanane)
-│   ├── 04_ops_swap.c         ← sa  sb  ss                                  (Hanane)
-│   ├── 05_ops_push.c         ← pa  pb                                      (Hanane)
-│   ├── 06_ops_rotate.c       ← ra  rb  rr                                  (Hanane)
-│   ├── 07_ops_rev_rotate.c   ← rra rrb rrr                                 (Hanane)
-│   ├── 08_index.c            ← indexation des valeurs                      (Sanae)
-│   ├── 09_disorder.c         ← calcul du désordre, pile déjà triée ?       (Sanae)
-│   ├── 10_sort_utils.c       ← min / max, amener un élément en haut        (ensemble)
-│   ├── 11_sort_small.c       ← tris pour 2, 3 et 5 éléments                (Sanae)
-│   ├── 12_sort_simple.c      ← --simple    O(n²)                           (Hanane)
-│   ├── 13_sort_medium.c      ← --medium    O(n√n)                          (Hanane)
-│   ├── 14_sort_complex.c     ← --complex   O(n log n)                      (Sanae)
-│   ├── 14_complex_utils.c    ← helpers du quicksort (pivots, petits cas)   (ensemble)
-│   ├── 15_flags.c            ← lecture des flags (--simple, --bench…)      (Sanae)
-│   ├── 16_sort_adaptive.c    ← --adaptive                                  (Sanae)
-│   └── 17_bench.c            ← --bench                                     (Hanane)
-└── bonus/
-    ├── checker_bonus.c       ← programme checker                           (ensemble)
-    └── checker_utils_bonus.c
-```
+- Arguments as separate numbers (`3 2 1`) or in one string (`"3 2 1"`), or both mixed.
+- Errors (`Error\n` on stderr): non-integers, values outside `INT_MIN`…`INT_MAX`,
+  duplicates, empty arguments, unknown flags, two strategy flags at once.
+- **Disorder metric** computed before any move.
+- **`--bench` mode** (on stderr): disorder in % with two decimals, strategy name and
+  complexity class, total operations and the count of each of the 11 operations.
+- **Bonus:** a `checker` program that checks whether a list of operations sorts the stack.
 
 ---
 
@@ -141,116 +56,337 @@ push_swap/
 ### Compilation
 
 ```bash
-make          # compile push_swap
-make bonus    # compile checker
-make clean    # supprime les fichiers objets
-make fclean   # supprime objets + binaires
-make re       # recompile tout
+make          # builds libft, then push_swap
+make bonus    # builds checker
+make clean    # removes object files
+make fclean   # removes object files and binaries
+make re       # rebuilds everything
 ```
 
-### Utilisation
+Compiled with `cc -Wall -Wextra -Werror`. The only external functions used are
+`read`, `write`, `malloc`, `free` and `exit`, plus our own `libft`.
+
+### Usage
 
 ```bash
-./push_swap 2 1 3 6 5 8                     # stratégie adaptative par défaut
+./push_swap 2 1 3 6 5 8                     # adaptive strategy (default)
 ./push_swap --simple 5 4 3 2 1              # force O(n²)
 ./push_swap --medium 4 67 3 87 23           # force O(n√n)
 ./push_swap --complex 4 67 3 87 23          # force O(n log n)
+./push_swap "3 2 1" 5 4                     # numbers inside a string also work
 
-ARG="4 67 3 87 23"; ./push_swap $ARG | wc -l          # nombre d'opérations
-ARG="4 67 3 87 23"; ./push_swap $ARG | ./checker_linux $ARG   # vérification
+ARG="4 67 3 87 23"; ./push_swap $ARG | wc -l                 # count operations
+ARG="4 67 3 87 23"; ./push_swap $ARG | ./checker $ARG        # check with our checker
+ARG="4 67 3 87 23"; ./push_swap $ARG | ./checker_linux $ARG  # check with 42's checker
 
-./push_swap --bench $ARG 2> bench.txt > /dev/null     # métriques seulement
+./push_swap --bench $ARG 2> bench.txt > /dev/null            # metrics only
 ```
 
-### Erreurs
+Example of `--bench` output:
+
+```
+$> ./push_swap --bench 4 67 3 87 23 > /dev/null
+[bench] disorder: 40.00%
+[bench] strategy: Adaptive / O(n^2)
+[bench] total_ops: 9
+[bench] sa: 0 sb: 0 ss: 0 pa: 2 pb: 2
+[bench] ra: 4 rb: 0 rr: 0 rra: 1 rrb: 0 rrr: 0
+```
+
+### Errors
 
 ```bash
 $> ./push_swap 0 one 2 3
 Error
 $> ./push_swap 3 2 3
 Error
+$> ./push_swap 2147483648
+Error
+$> ./push_swap
+$>
+```
+
+### Bonus: `checker`
+
+```bash
+$> ./checker 3 2 1 0
+rra
+pb
+sa
+rra
+pa
+OK                       # (end the input with Ctrl+D)
+$> echo sa | ./checker 1 2 3
+KO
+$> echo xx | ./checker 1 2
+Error
 ```
 
 ---
 
-## 🧠 Algorithmes
+## 🧠 Algorithms
 
-> ⚠️ Section à compléter au fur et à mesure de l'implémentation.
-> Toutes les complexités sont exprimées en **nombre d'opérations push_swap générées**.
+### Preprocessing
 
-### Mesure du désordre
+**Indexing** (`08_index.c`): each value is replaced by its rank `0 … n-1`.
+`-50 900 3` becomes `0 2 1`. The order stays the same, so the disorder does not
+change, but the algorithms can then compare indexes directly ("index ≤ i", "index
+in the last third"…). Cost: O(n²) comparisons, O(n) extra memory, **0 operations**.
 
-Proportion de paires `(i, j)` avec `i < j` et `a[i] > a[j]` parmi toutes les paires :
-`0` = déjà trié, `1` = trié à l'envers. Calculé avant toute opération.
+**Disorder metric** (`09_disorder.c`): the proportion of pairs `(i, j)` with `i < j`
+and `a[i] > a[j]` among all `n(n-1)/2` pairs. `0` means already sorted, `1` means sorted
+in reverse. It is computed **before any move** and stored × 10000 as an integer
+(`40.00%` → `4000`) to avoid floating-point numbers.
 
-### 1. Simple — O(n²)
+**Stack structure** (`01_stack.c`): each stack is a **circular buffer** (an array of
+`n` ints plus a `top` index). `push`, `swap`, `rotate` and `reverse_rotate` are all
+O(1): a rotation only moves `top` by one cell instead of shifting the whole array.
 
-*À compléter : principe (ex. extraction répétée du minimum vers `b` puis `pa`),
-pourquoi chaque extraction coûte au plus O(n) rotations → O(n²) au total.*
+### 0. Small inputs (n ≤ 5) — `11_sort_small.c`
 
-### 2. Medium — O(n√n)
+- 2 numbers: one `sa` if needed.
+- 3 numbers: each of the 6 possible orders is handled by a fixed case, with
+  **at most 2 operations**.
+- 4–5 numbers: push the minimum to `b` (bringing it to the top the shortest way)
+  until 3 remain, sort the 3, then `pa` everything back. At most 6 operations for 4
+  numbers and 10 for 5 (checked on all permutations).
 
-**Envoi vers `b` (« butterfly ») :** un compteur `i` démarre à 0 et une fenêtre
-de largeur `r ≈ 1,5·√n` (15 pour 100 nombres, 33 pour 500). Pour le sommet `v` de `a` :
-- `v ≤ i` → `pb` puis `rb` (les petits vont en bas de `b`), `i++` ;
-- `v ≤ i + r` → `pb` (reste en haut de `b`), `i++` ;
-- sinon → `ra`.
+### 1. Simple — O(n²) — `12_sort_simple.c`
 
-`b` se retrouve presque trié, les plus grands près du sommet.
+**Principle (min extraction):** while `a` is not sorted, bring the minimum of `a` to the
+top (with `ra` if it is in the top half, `rra` otherwise), then `pb`. At the end, `pa`
+everything back: `b` holds the numbers in descending order, so `a` ends up sorted.
+The loop stops early as soon as what remains in `a` is already sorted.
 
-**Retour vers `a` :** `b` contient exactement les index `0 … b.size−1`. On compare
-le coût pour amener le maximum et le 2ᵉ maximum au sommet ; si le 2ᵉ est moins
-cher, on l'envoie d'abord, puis le maximum, puis `sa`.
+**Bound:** each extraction costs at most `size/2` rotations + 1 push.
+Sum over the `n` extractions ≤ n²/4 + 2n → **O(n²)** operations.
+Memory: O(1) besides the stacks.
 
-**Borne :** un élément est rotaté tant qu'il est hors de la fenêtre, soit au plus
-O(n / r) tours de `a` de O(n) chacun → O(n²/r) = O(n√n). Au retour, chaque élément
-est à O(r) positions de sa place dans `b` → O(n·r) = O(n√n). Mémoire : O(n).
+### 2. Medium — O(n√n) — `13_sort_medium.c`
 
-### 3. Complex — O(n log n)
+**Push to `b` ("butterfly"):** a counter `i` starts at 0, and a window of width
+`r ≈ 1.5·√n` (15 for 100 numbers, 33 for 500). For the top value `v` of `a`:
+- `v ≤ i` → `pb` then `rb` (small values go to the bottom of `b`), `i++`;
+- `v ≤ i + r` → `pb` (stays on top of `b`), `i++`;
+- otherwise → `ra`.
 
-Quicksort récursif « à trois tiers » sur des plages d'index contiguës
-`[lo, lo+len)` (`srcs/14_sort_complex.c`, helpers dans `srcs/14_complex_utils.c`).
-Deux pivots `p1 = lo + len/3` et `p2 = lo + 2·len/3` :
+`b` ends up almost sorted, with the biggest values near the top and the smallest
+near the bottom (the shape of a butterfly's wings).
 
-- **`sort_a`** (plage au sommet de `a`) : grands (`≥ p2`) → `ra`, moyens → `pb` + `rb`,
-  petits → `pb`. Puis on annule les rotations (`rrr` quand les deux piles en ont
-  besoin), on trie les grands dans `a`, puis on renvoie les moyens et les petits.
-- **`sort_b`** (plage au sommet de `b`) : grands → `pa`, moyens → `pa` + `ra`,
-  petits → `rb`. On trie les grands, on remonte les moyens et on trie les petits.
-- Un `rb` (ou `ra`) en attente suivi d'un `ra` (ou `rb`) est fusionné en `rr`.
-- Plages de 3 éléments ou moins, ou déjà triées : traitées directement.
+**`rr` optimisation:** after a `pb` of a small value, the `rb` is not printed right away.
+If the next move is an `ra`, both are printed together as one `rr` (`pb rb ra` → `pb rr`).
+This is safe because `ra` only touches `a`.
 
-**Borne :** à chaque niveau de récursion, chaque élément subit O(1) opérations
-(un push ou une rotation, plus au plus une rotation inverse), et la taille des plages
-est divisée par 3 → log₃(n) niveaux → **O(n log n)** opérations.
-Mémoire : O(n) pour les piles + O(log n) de récursion.
+**Push back to `a`:** `b` holds exactly the indexes `0 … b.size-1`, so the maximum is
+always `b.size-1`. We compare the cost of bringing the maximum and the second maximum
+to the top. If the second one is cheaper, we push it first, then the maximum, then `sa`.
 
-**Mesures** (aléatoire, vérifié avec `checker_linux`) : ≈ 655 opérations pour 100
-nombres (max 680), ≈ 4250 pour 500 nombres.
+**Bound:** a value is rotated while it is outside the window, so `a` is turned at most
+O(n / r) times, each turn costing O(n) → O(n² / r) = O(n√n). When pushing back, each value
+is at most O(r) positions away from the top of `b` → O(n·r) = O(n√n).
+Memory: O(1) besides the stacks.
 
-### 4. Adaptive
+### 3. Complex — O(n log n) — `14_sort_complex.c`, `14_complex_utils.c`
 
-| Désordre | Régime | Méthode utilisée | Complexité |
+**Principle:** a recursive quicksort that splits each range into **three thirds**
+instead of two. It works on contiguous index ranges `[lo, lo+len)`, with two pivots
+`p1 = lo + len/3` and `p2 = lo + 2·len/3`:
+
+- **`sort_a`** (range on top of `a`): big values (`≥ p2`) → `ra`, middle values → `pb`
+  then `rb`, small values → `pb`. Then the rotations are undone (with `rrr` while
+  both stacks need it), the big third is sorted in `a`, and the middle and small
+  thirds are sorted from `b`.
+- **`sort_b`** (range on top of `b`): big values → `pa`, middle values → `pa` then `ra`,
+  small values → `rb`. Then the big third is sorted, the middle third is brought back,
+  and the small third is sorted.
+- A pending `rb` (or `ra`) followed by an `ra` (or `rb`) is merged into one `rr`.
+- A range of 3 elements or fewer, or already sorted, is handled directly.
+
+**Why three thirds:** with two pivots, each pass places a third of the range in its final
+area (`a`) without touching it again, and the range size is divided by 3 at each level
+instead of 2, which means fewer levels and fewer operations.
+
+**Bound:** at each recursion level, each element gets O(1) operations (one push or one
+rotation, plus at most one reverse rotation). The size of the ranges is divided by 3,
+so there are log₃(n) levels → **O(n log n)** operations.
+Memory: O(1) besides the stacks, plus O(log n) for the recursion.
+
+### 4. Adaptive — `16_sort_adaptive.c` (default)
+
+| Condition | Regime | Method used | Complexity |
 |:---:|---|---|:---:|
-| `< 0.2` | faible | *à compléter* | O(n²) |
-| `0.2 ≤ d < 0.5` | moyen | *à compléter* | O(n√n) |
-| `≥ 0.5` | fort | *à compléter* | O(n log n) |
+| `n ≤ 5` | tiny | small sort | O(1) (≤ 10 ops) |
+| `disorder < 0.2` | low | simple (min extraction) | O(n²) |
+| `0.2 ≤ disorder < 0.5` | medium | medium (butterfly chunks) | O(n√n) |
+| `disorder ≥ 0.5` | high | complex (three-way quicksort) | O(n log n) |
 
-*À compléter : justification des seuils, techniques internes, bornes en temps et
-en mémoire.*
+**Why these thresholds:** `0.2` and `0.5` are the regime limits given by the subject
+(`LOW_DISORDER` and `HIGH_DISORDER` in `push_swap.h`). Each regime uses the strategy
+whose complexity class matches the target of that regime.
+
+- **Low disorder (< 0.2):** most pairs are already in order. Min extraction is the
+  simplest method, it stops as soon as the rest of `a` is sorted, and its upper bound
+  is O(n²), as required.
+- **Medium disorder (0.2 – 0.5):** the input is still partly ordered. The butterfly
+  chunk sort gets the lowest counts in this range (see the measurements below), and
+  it is O(n√n).
+- **High disorder (≥ 0.5):** the input is close to random or reversed. This is where
+  the three-way quicksort is best for big inputs, with O(n log n) operations.
+
+**Time and space of the selection itself:** the disorder is computed once in O(n²)
+comparisons (0 operations), and the choice is O(1). Total memory stays O(n) (the two
+stacks), plus O(log n) recursion in the high regime.
 
 ---
 
-## 📚 Ressources
+## 📊 Performance
 
-- [Sujet officiel push_swap (42)](https://projects.intra.42.fr/projects/42cursus-push_swap)
-- [Quicksort — Wikipédia](https://fr.wikipedia.org/wiki/Tri_rapide)
-- [Notation Big-O — Wikipédia](https://fr.wikipedia.org/wiki/Comparaison_asymptotique)
-- [Inversions (mesure du désordre) — Wikipedia](https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics))
-- Visualiseur push_swap utilisé pour les tests
+Averages over 20 random inputs (all outputs checked as sorted):
 
-### Utilisation de l'IA
+| Strategy | 100 numbers (avg / max) | 500 numbers (avg / max) |
+|---|:---:|:---:|
+| `--simple` | 1405 / 1609 | 32212 / 33739 |
+| `--medium` | 534 / 562 | 4593 / 4733 |
+| `--complex` | 654 / 667 | 4248 / 4282 |
+| `--adaptive` (default) | **597 / 667** | **4434 / 4698** |
 
-*À compléter honnêtement par chacune* : pour quelles tâches l'IA a été utilisée
-(ex. structure du README, idées de tests, explications de concepts) et pour quelles
-parties du projet. Tout contenu généré a été relu, compris et testé par nous deux.
+Subject targets: 100 numbers < 700 (excellent), 500 numbers < 5500 (excellent).
+The default mode reaches the "excellent" level for both sizes.
+
+Partly sorted inputs (one example each):
+
+| n | disorder | simple | medium | complex | adaptive picks |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| 100 | 5.77% | 260 | 230 | 566 | simple → 260 |
+| 100 | 25.53% | 852 | 410 | 650 | medium → 410 |
+| 500 | 12.68% | 8705 | 2229 | 4205 | simple → 8705 |
+| 500 | 21.95% | 16939 | 3107 | 4263 | medium → 3107 |
+
+---
+
+## 👥 Contributions
+
+The subject requires that **both learners contribute meaningfully and understand all
+the code**. Each one owned her part, and every part was reviewed and explained to the
+other before being merged (pull request + cross review).
+
+### 🟦 Hanane — `haait-ba`
+
+**Foundations: stacks, operations, parsing — simple and medium algorithms**
+
+- `Makefile` (`$(NAME)`, `all`, `clean`, `fclean`, `re`, `bonus`, no relink) with `libft`
+- Stack structure (circular buffer) and memory freeing
+- The 11 operations (`sa` … `rrr`), with output and counters for the bench
+- Argument parsing: separate numbers or numbers in one string (`"3 2 1"`)
+- Error handling → `Error\n` on stderr
+- **Simple strategy — O(n²)** (`--simple`)
+- **Medium strategy — O(n√n)** (`--medium`)
+- `--bench` mode
+
+### 🟪 Sanae — `sael-mgh`
+
+**Foundations: input analysis — complex and adaptive algorithms**
+
+- Flag parsing (`--simple`, `--medium`, `--complex`, `--adaptive`, `--bench`)
+- Value indexing (each number replaced by its rank `0 … n-1`)
+- **Disorder** computation (`compute_disorder`) before any move
+- Special sorts for small sizes (2, 3 and 5 elements)
+- **Complex strategy — O(n log n)** (`--complex`)
+- **Adaptive strategy** (`--adaptive`, default)
+
+### 🤝 Together
+
+- **Bonus:** `checker` program
+- Optimisations (merging `ra` + `rb` → `rr`, `rra` + `rrb` → `rrr`)
+- Choice and justification of the adaptive thresholds
+- Tests: errors, edge cases, 100 / 500 random numbers, `checker_linux`
+- `norminette` and memory leak checks
+- This README
+- Defense preparation: each of us can explain **all** the code
+
+### Git workflow
+
+- `main`: stable version, always compiles
+- One branch per task: `hanane/parsing`, `sanae/radix`, …
+- Merge into `main` only through a pull request reviewed by the other
+
+---
+
+## 🗂️ Project structure
+
+The Norm allows at most 5 functions per file and 25 lines per function, so the code
+is split into small files, numbered in the order they were written.
+
+```
+push_swap/
+├── Makefile                  ← builds libft, then push_swap / checker        (Hanane)
+├── README.md
+├── includes/
+│   ├── push_swap.h           ← structures, enums and prototypes              (together)
+│   └── checker_bonus.h       ← prototypes of the checker                     (together)
+├── libft/                    ← our libft (sources + Makefile)
+├── srcs/
+│   ├── 00_main.c             ← parsing → index → disorder → sort → bench     (Sanae)
+│   ├── 01_stack.c            ← init / free the stacks, error_exit            (Hanane)
+│   ├── 02_parsing.c          ← argv → numbers                                (Hanane)
+│   ├── 03_parsing_utils.c    ← atoi with overflow check, duplicates          (Hanane)
+│   ├── 04_ops_swap.c         ← sa  sb  ss                                    (Hanane)
+│   ├── 05_ops_push.c         ← pa  pb                                        (Hanane)
+│   ├── 06_ops_rotate.c       ← ra  rb  rr                                    (Hanane)
+│   ├── 07_ops_rev_rotate.c   ← rra rrb rrr                                   (Hanane)
+│   ├── 08_index.c            ← values → ranks 0 … n-1                        (Sanae)
+│   ├── 09_disorder.c         ← disorder metric, is_sorted                    (Sanae)
+│   ├── 10_sort_utils.c       ← min / max, bring to top, rotate_both (rr/rrr) (together)
+│   ├── 11_sort_small.c       ← sorts for 2, 3 and 5 elements                 (Sanae)
+│   ├── 12_sort_simple.c      ← --simple    O(n²)                             (Hanane)
+│   ├── 13_sort_medium.c      ← --medium    O(n√n)                            (Hanane)
+│   ├── 14_sort_complex.c     ← --complex   O(n log n)                        (Sanae)
+│   ├── 14_complex_utils.c    ← quicksort helpers (pivots, small ranges)      (together)
+│   ├── 15_flags.c            ← flag parsing (--simple, --bench…)             (Sanae)
+│   ├── 16_sort_adaptive.c    ← --adaptive and strategy dispatch              (Sanae)
+│   └── 17_bench.c            ← --bench output on stderr                      (Hanane)
+└── bonus/
+    ├── checker_bonus.c       ← checker main: parse, read, apply, OK/KO       (together)
+    └── checker_utils_bonus.c ← read_line, apply_swap_push, apply_rotate      (together)
+```
+
+### How the checker works
+
+1. Parses the arguments with **the same functions** as push_swap.
+2. Reads stdin one character at a time with `read` (`read_line`), one operation per
+   line, into a 5-cell buffer owned by `main` (no `malloc`, so no leak).
+3. Applies each operation with the **silent primitives** (`swap`, `push`, `rotate`,
+   `reverse_rotate`), which do the move without printing anything.
+4. Unknown or badly formatted operation → `Error` on stderr.
+   At the end: `a` sorted **and** `b` empty → `OK`, otherwise `KO`.
+
+---
+
+## 📚 Resources
+
+- [push_swap subject (42 intra)](https://projects.intra.42.fr/projects/42cursus-push_swap)
+- [Quicksort — Wikipedia](https://en.wikipedia.org/wiki/Quicksort)
+- [Selection sort — Wikipedia](https://en.wikipedia.org/wiki/Selection_sort)
+- [Big O notation — Wikipedia](https://en.wikipedia.org/wiki/Big_O_notation)
+- [Inversions (disorder metric) — Wikipedia](https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics))
+- [Circular buffer — Wikipedia](https://en.wikipedia.org/wiki/Circular_buffer)
+- [`read(2)` — Linux manual page](https://man7.org/linux/man-pages/man2/read.2.html)
+- A push_swap visualizer, used to watch the stacks move during our tests
+
+### Use of AI
+
+We used an AI assistant (Claude) as a tutor and a reviewer, not as a replacement for
+understanding. Everything it produced was read, tested and explained between the two
+of us before being kept.
+
+- **Explanations:** concepts like `read` and file descriptors, circular buffers,
+  complexity bounds in the push_swap model, step-by-step traces of our functions,
+  and practice for the defense.
+- **Optimisation:** the `rotate_both` helper and the merge of `ra` + `rb` into `rr`
+  in the medium sort (`10_sort_utils.c`, `13_sort_medium.c`).
+- **Bonus:** help writing the `checker` (`bonus/`), after we drafted it ourselves.
+- **Tests and docs:** ideas for edge-case tests, benchmark scripts, and the structure
+  and English wording of this README.
+
+The algorithms themselves (strategy choice, chunk and pivot logic, thresholds) are our
+own design.

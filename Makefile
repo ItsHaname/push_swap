@@ -9,7 +9,7 @@ RM			= rm -f
 LIBFT_DIR	= libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 
-HEADER		= includes/push_swap.h
+HEADER		= includes/push_swap.h includes/checker_bonus.h
 
 # files shared by push_swap and checker (everything except main.c)
 COMMON		= srcs/01_stack.c srcs/02_parsing.c srcs/03_parsing_utils.c \

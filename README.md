@@ -33,7 +33,7 @@ The binary embeds **four sorting strategies**, selected at runtime:
 |---|---|:---:|
 | `--simple` | Min extraction (selection sort adaptation) | O(n²) |
 | `--medium` | Chunk-based "butterfly" sort (window ≈ 1.5·√n) | O(n√n) |
-| `--complex` | Quicksort with two pivots, on both stacks | O(n log n) |
+| `--complex` | MSD radix sort in base 3, on both stacks | O(n log n) |
 | `--adaptive` *(default)* | Picks a method from the measured **disorder** | depends on the regime |
 
 All complexities in this README are measured in **number of push_swap operations
@@ -186,29 +186,41 @@ O(n / r) times, each turn costing O(n) → O(n² / r) = O(n√n). When pushing b
 is at most O(r) positions away from the top of `b` → O(n·r) = O(n√n).
 Memory: O(1) besides the stacks.
 
-### 3. Complex — O(n log n) — `14_sort_complex.c`, `14_complex_utils.c`
+### 3. Complex — MSD radix sort in base 3 — O(n log n) — `14_sort_complex.c`, `14_complex_utils.c`
 
-**Principle:** a recursive quicksort that splits each range into **three thirds**
-instead of two. It works on contiguous index ranges `[lo, lo+len)`, with two pivots
-`p1 = lo + len/3` and `p2 = lo + 2·len/3`:
+**Principle:** a **most-significant-digit (MSD) radix sort**, in **base 3**, on the
+indexes `0 … n-1`. A range `[lo, lo+len)` is split by its most significant base-3 digit:
 
-- **`sort_a`** (range on top of `a`): big values (`≥ p2`) → `ra`, middle values → `pb`
-  then `rb`, small values → `pb`. Then the rotations are undone (with `rrr` while
-  both stacks need it), the big third is sorted in `a`, and the middle and small
-  thirds are sorted from `b`.
-- **`sort_b`** (range on top of `b`): big values → `pa`, middle values → `pa` then `ra`,
-  small values → `rb`. Then the big third is sorted, the middle third is brought back,
-  and the small third is sorted.
+```
+digit = (v - lo) * 3 / len        → 0, 1 or 2
+d1 = lo + len/3,  d2 = lo + 2·len/3   (limits between the digits)
+```
+
+- **`radix_a`** (range on top of `a`), one bucketing pass `bucket_a`:
+  digit 2 → stays in `a` (`ra`), digit 1 → bottom of `b` (`pb` then `rb`),
+  digit 0 → top of `b` (`pb`). Then the rotations are undone (with `rrr` while both
+  stacks need it), bucket 2 is sorted in `a`, and buckets 1 and 0 are sorted from `b`.
+- **`radix_b`** (range on top of `b`), pass `bucket_b`: digit 2 → top of `a` (`pa`),
+  digit 1 → bottom of `a` (`pa` then `ra`), digit 0 → stays in `b` (`rb`).
+  Then bucket 2 is sorted, bucket 1 is brought back, and bucket 0 is sorted.
+- Each bucket is sorted again on its **next** digit (recursion), until it holds 3 values
+  or fewer, or is already sorted (then it is finished directly).
 - A pending `rb` (or `ra`) followed by an `ra` (or `rb`) is merged into one `rr`.
-- A range of 3 elements or fewer, or already sorted, is handled directly.
 
-**Why three thirds:** with two pivots, each pass places a third of the range in its final
-area (`a`) without touching it again, and the range size is divided by 3 at each level
-instead of 2, which means fewer levels and fewer operations.
+**Why MSD and not the classic LSD (binary) radix:** an LSD binary radix needs
+`log₂(n)` passes, and **every** value moves at least once per pass: for 100 numbers
+that is 7 passes × 100 = **at least 700 operations**, plus the `pa` to bring them back
+(our first version made 1084). LSD also needs every pass to keep the order of the
+previous one (stability), so passes cannot be shortened. With MSD, each finished bucket
+is never touched again, and the buckets get smaller at each level.
 
-**Bound:** at each recursion level, each element gets O(1) operations (one push or one
-rotation, plus at most one reverse rotation). The size of the ranges is divided by 3,
-so there are log₃(n) levels → **O(n log n)** operations.
+**Why base 3:** in one move a value can be dropped in **3 places** (stay in `a`, top of
+`b`, bottom of `b`), so 3 buckets per pass cost nothing extra. Ranges are divided by 3
+at each level instead of 2, which means fewer levels and fewer operations.
+
+**Bound:** at each digit level, each value gets O(1) operations (one push or one
+rotation, plus at most one reverse rotation). The ranges are divided by 3 at each
+level, so there are log₃(n) levels → **O(n log n)** operations.
 Memory: O(1) besides the stacks, plus O(log n) for the recursion.
 
 ### 4. Adaptive — `16_sort_adaptive.c` (default)
@@ -218,7 +230,7 @@ Memory: O(1) besides the stacks, plus O(log n) for the recursion.
 | `n ≤ 5` | tiny | small sort | O(1) (≤ 10 ops) |
 | `disorder < 0.2` | low | simple (min extraction) | O(n²) |
 | `0.2 ≤ disorder < 0.5` | medium | medium (butterfly chunks) | O(n√n) |
-| `disorder ≥ 0.5` | high | complex (three-way quicksort) | O(n log n) |
+| `disorder ≥ 0.5` | high | complex (MSD radix, base 3) | O(n log n) |
 
 **Why these thresholds:** `0.2` and `0.5` are the regime limits given by the subject
 (`LOW_DISORDER` and `HIGH_DISORDER` in `push_swap.h`). Each regime uses the strategy
@@ -231,7 +243,7 @@ whose complexity class matches the target of that regime.
   chunk sort gets the lowest counts in this range (see the measurements below), and
   it is O(n√n).
 - **High disorder (≥ 0.5):** the input is close to random or reversed. This is where
-  the three-way quicksort is best for big inputs, with O(n log n) operations.
+  the base-3 MSD radix sort is best for big inputs, with O(n log n) operations.
 
 **Time and space of the selection itself:** the disorder is computed once in O(n²)
 comparisons (0 operations), and the choice is O(1). Total memory stays O(n) (the two
@@ -241,14 +253,14 @@ stacks), plus O(log n) recursion in the high regime.
 
 ## 📊 Performance
 
-Averages over 20 random inputs (all outputs checked as sorted):
+Averages over 40 random inputs (all outputs checked as sorted):
 
 | Strategy | 100 numbers (avg / max) | 500 numbers (avg / max) |
 |---|:---:|:---:|
 | `--simple` | 1405 / 1609 | 32212 / 33739 |
-| `--medium` | 534 / 562 | 4593 / 4733 |
-| `--complex` | 654 / 667 | 4248 / 4282 |
-| `--adaptive` (default) | **597 / 667** | **4434 / 4698** |
+| `--medium` | 535 / 567 | 4605 / 4752 |
+| `--complex` | 657 / 681 | 4243 / 4295 |
+| `--adaptive` (default) | **606 / 669** | **4405 / 4705** |
 
 Subject targets: 100 numbers < 700 (excellent), 500 numbers < 5500 (excellent).
 The default mode reaches the "excellent" level for both sizes.
@@ -341,7 +353,7 @@ push_swap/
 │   ├── 12_sort_simple.c      ← --simple    O(n²)                             (Hanane)
 │   ├── 13_sort_medium.c      ← --medium    O(n√n)                            (Hanane)
 │   ├── 14_sort_complex.c     ← --complex   O(n log n)                        (Sanae)
-│   ├── 14_complex_utils.c    ← quicksort helpers (pivots, small ranges)      (together)
+│   ├── 14_complex_utils.c    ← radix helpers (digit limits, small buckets)   (together)
 │   ├── 15_flags.c            ← flag parsing (--simple, --bench…)             (Sanae)
 │   ├── 16_sort_adaptive.c    ← --adaptive and strategy dispatch              (Sanae)
 │   └── 17_bench.c            ← --bench output on stderr                      (Hanane)
@@ -365,7 +377,7 @@ push_swap/
 ## 📚 Resources
 
 - [push_swap subject (42 intra)](https://projects.intra.42.fr/projects/42cursus-push_swap)
-- [Quicksort — Wikipedia](https://en.wikipedia.org/wiki/Quicksort)
+- [Radix sort (LSD and MSD) — Wikipedia](https://en.wikipedia.org/wiki/Radix_sort)
 - [Selection sort — Wikipedia](https://en.wikipedia.org/wiki/Selection_sort)
 - [Big O notation — Wikipedia](https://en.wikipedia.org/wiki/Big_O_notation)
 - [Inversions (disorder metric) — Wikipedia](https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics))
@@ -382,11 +394,13 @@ of us before being kept.
 - **Explanations:** concepts like `read` and file descriptors, circular buffers,
   complexity bounds in the push_swap model, step-by-step traces of our functions,
   and practice for the defense.
+- **Complex strategy:** turning our first LSD binary radix (1084 operations for 100
+  numbers) into the base-3 MSD radix, to get under 700.
 - **Optimisation:** the `rotate_both` helper and the merge of `ra` + `rb` into `rr`
   in the medium sort (`10_sort_utils.c`, `13_sort_medium.c`).
 - **Bonus:** help writing the `checker` (`bonus/`), after we drafted it ourselves.
 - **Tests and docs:** ideas for edge-case tests, benchmark scripts, and the structure
   and English wording of this README.
 
-The algorithms themselves (strategy choice, chunk and pivot logic, thresholds) are our
+The algorithms themselves (strategy choice, chunk and radix bucket logic, thresholds) are our
 own design.

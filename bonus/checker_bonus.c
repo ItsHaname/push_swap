@@ -12,11 +12,6 @@
 
 #include "checker_bonus.h"
 
-/* 1. parsing: exactly the same as push_swap (same functions)
-** 2. read every line of stdin and apply it silently
-**    unknown op -> error_exit (frees the stacks, prints "Error")
-** 3. a sorted AND b empty -> OK, otherwise KO
-** buf lives here, in main: read_line writes into it, no malloc. */
 int	main(int argc, char **argv)
 {
 	t_ctx	ctx;

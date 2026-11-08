@@ -12,7 +12,6 @@
 
 #include "push_swap.h"
 
-/* chunk width ~ 1.5 * sqrt(n): 15 for 100 numbers, 33 for 500 */
 static int	chunk_range(int n)
 {
 	int	r;
@@ -23,23 +22,6 @@ static int	chunk_range(int n)
 	return (r * 3 / 2);
 }
 
-/* "butterfly": index <= i goes to the bottom of b (pb + rb),
-** index <= i + range stays on top of b (pb). b ends up roughly
-** sorted with the biggest values near the top.
-**
-** ---- rr optimisation (lazy rb) ----
-** After a "pb" of a small value we need an "rb", but we DON'T print it
-** right away: we remember it in `rot` (1 = one rb is waiting).
-** Then, on the next element:
-**   - if a needs an "ra"  -> rotate_both(ctx, 1, rot) prints ONE "rr"
-**                            (ra + the waiting rb together)
-**   - if we must pb again -> rotate_both(ctx, 0, rot) prints the
-**                            waiting "rb" alone first, then pb
-** Waiting is safe: "ra" only touches a, so doing the rb a bit later
-** gives exactly the same stack b.
-** Trace: a top = [small, big, ...]
-**   before: pb rb ra   (3 ops)
-**   now:    pb rr      (2 ops) */
 static void	push_chunks(t_ctx *ctx)
 {
 	int	i;
@@ -83,8 +65,6 @@ static int	cost(t_stack *s, int pos)
 	return (s->size - pos);
 }
 
-/* b holds exactly the indexes 0 .. b.size - 1. If max - 1 is cheaper
-** to reach than max, push it first, then max, then swap them in a. */
 void	sort_medium(t_ctx *ctx)
 {
 	int	max;

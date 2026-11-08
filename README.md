@@ -32,8 +32,8 @@ Le binaire embarque **quatre stratégies** de tri, choisies à l'exécution :
 | Flag | Stratégie | Complexité (en nombre d'opérations) |
 |---|---|:---:|
 | `--simple` | Tri simple (extraction du min / sélection) | O(n²) |
-| `--medium` | Tri par chunks (√n chunks) | O(n√n) |
-| `--complex` | Radix sort (LSD, en binaire, sur les index) | O(n log n) |
+| `--medium` | Tri par chunks « butterfly » (fenêtre ≈ 1,5·√n) | O(n√n) |
+| `--complex` | Quicksort à deux pivots sur les deux piles | O(n log n) |
 | `--adaptive` *(défaut)* | Choix selon le **désordre** mesuré | dépend du régime |
 
 ### Objectifs de performance
@@ -76,7 +76,7 @@ d'abord sur un simple tableau d'entiers pendant que Hanane construit les piles.
 - [ ] Indexation des valeurs (remplacer chaque nombre par son rang `0..n-1`)
 - [ ] Calcul du **désordre** (`compute_disorder`) avant toute opération
 - [ ] Tris spéciaux pour les petites tailles (2, 3 et 5 éléments)
-- [ ] **Stratégie complexe — O(n log n)** (`--complex`) : radix sort
+- [ ] **Stratégie complexe — O(n log n)** (`--complex`) : quicksort à deux pivots
 - [ ] **Stratégie adaptative** (`--adaptive`, défaut) : sélection selon le désordre
 
 ### 🤝 Ensemble
@@ -110,22 +110,25 @@ push_swap/
 │   └── push_swap.h           ← structures et prototypes                    (ensemble)
 ├── libft/                    ← notre libft (sources + Makefile)
 ├── srcs/
-│   ├── main.c                ← lecture des flags, choix de la stratégie    (Sanae)
-│   ├── parsing.c             ← argv → nombres                              (Hanane)
-│   ├── parsing_utils.c       ← atoi avec dépassement, doublons             (Hanane)
-│   ├── stack.c               ← créer / ajouter / libérer la pile           (Hanane)
-│   ├── ops_swap.c            ← sa  sb  ss                                  (Hanane)
-│   ├── ops_push.c            ← pa  pb                                      (Hanane)
-│   ├── ops_rotate.c          ← ra  rb  rr                                  (Hanane)
-│   ├── ops_rev_rotate.c      ← rra rrb rrr                                 (Hanane)
-│   ├── sort_simple.c         ← --simple    O(n²)                           (Hanane)
-│   ├── sort_medium.c         ← --medium    O(n√n)                          (Hanane)
-│   ├── bench.c               ← --bench                                     (Hanane)
-│   ├── index.c               ← indexation des valeurs                      (Sanae)
-│   ├── disorder.c            ← calcul du désordre                          (Sanae)
-│   ├── sort_small.c          ← tris pour 2, 3 et 5 éléments                (Sanae)
-│   ├── sort_complex.c        ← --complex   O(n log n)                      (Sanae)
-│   └── sort_adaptive.c       ← --adaptive                                  (Sanae)
+│   ├── 00_main.c             ← enchaîne parsing, tri et bench              (Sanae)
+│   ├── 01_stack.c            ← créer / ajouter / libérer la pile           (Hanane)
+│   ├── 02_parsing.c          ← argv → nombres                              (Hanane)
+│   ├── 03_parsing_utils.c    ← atoi avec dépassement, doublons             (Hanane)
+│   ├── 04_ops_swap.c         ← sa  sb  ss                                  (Hanane)
+│   ├── 05_ops_push.c         ← pa  pb                                      (Hanane)
+│   ├── 06_ops_rotate.c       ← ra  rb  rr                                  (Hanane)
+│   ├── 07_ops_rev_rotate.c   ← rra rrb rrr                                 (Hanane)
+│   ├── 08_index.c            ← indexation des valeurs                      (Sanae)
+│   ├── 09_disorder.c         ← calcul du désordre, pile déjà triée ?       (Sanae)
+│   ├── 10_sort_utils.c       ← min / max, amener un élément en haut        (ensemble)
+│   ├── 11_sort_small.c       ← tris pour 2, 3 et 5 éléments                (Sanae)
+│   ├── 12_sort_simple.c      ← --simple    O(n²)                           (Hanane)
+│   ├── 13_sort_medium.c      ← --medium    O(n√n)                          (Hanane)
+│   ├── 14_sort_complex.c     ← --complex   O(n log n)                      (Sanae)
+│   ├── 14_complex_utils.c    ← helpers du quicksort (pivots, petits cas)   (ensemble)
+│   ├── 15_flags.c            ← lecture des flags (--simple, --bench…)      (Sanae)
+│   ├── 16_sort_adaptive.c    ← --adaptive                                  (Sanae)
+│   └── 17_bench.c            ← --bench                                     (Hanane)
 └── bonus/
     ├── checker_bonus.c       ← programme checker                           (ensemble)
     └── checker_utils_bonus.c
@@ -187,13 +190,43 @@ pourquoi chaque extraction coûte au plus O(n) rotations → O(n²) au total.*
 
 ### 2. Medium — O(n√n)
 
-*À compléter : découpage en √n chunks d'index, push vers `b` chunk par chunk,
-puis réinsertion du maximum dans `a`. Justification de la borne.*
+**Envoi vers `b` (« butterfly ») :** un compteur `i` démarre à 0 et une fenêtre
+de largeur `r ≈ 1,5·√n` (15 pour 100 nombres, 33 pour 500). Pour le sommet `v` de `a` :
+- `v ≤ i` → `pb` puis `rb` (les petits vont en bas de `b`), `i++` ;
+- `v ≤ i + r` → `pb` (reste en haut de `b`), `i++` ;
+- sinon → `ra`.
+
+`b` se retrouve presque trié, les plus grands près du sommet.
+
+**Retour vers `a` :** `b` contient exactement les index `0 … b.size−1`. On compare
+le coût pour amener le maximum et le 2ᵉ maximum au sommet ; si le 2ᵉ est moins
+cher, on l'envoie d'abord, puis le maximum, puis `sa`.
+
+**Borne :** un élément est rotaté tant qu'il est hors de la fenêtre, soit au plus
+O(n / r) tours de `a` de O(n) chacun → O(n²/r) = O(n√n). Au retour, chaque élément
+est à O(r) positions de sa place dans `b` → O(n·r) = O(n√n). Mémoire : O(n).
 
 ### 3. Complex — O(n log n)
 
-*À compléter : radix sort LSD sur les index binaires ; log₂(n) passes de O(n)
-opérations chacune.*
+Quicksort récursif « à trois tiers » sur des plages d'index contiguës
+`[lo, lo+len)` (`srcs/14_sort_complex.c`, helpers dans `srcs/14_complex_utils.c`).
+Deux pivots `p1 = lo + len/3` et `p2 = lo + 2·len/3` :
+
+- **`sort_a`** (plage au sommet de `a`) : grands (`≥ p2`) → `ra`, moyens → `pb` + `rb`,
+  petits → `pb`. Puis on annule les rotations (`rrr` quand les deux piles en ont
+  besoin), on trie les grands dans `a`, puis on renvoie les moyens et les petits.
+- **`sort_b`** (plage au sommet de `b`) : grands → `pa`, moyens → `pa` + `ra`,
+  petits → `rb`. On trie les grands, on remonte les moyens et on trie les petits.
+- Un `rb` (ou `ra`) en attente suivi d'un `ra` (ou `rb`) est fusionné en `rr`.
+- Plages de 3 éléments ou moins, ou déjà triées : traitées directement.
+
+**Borne :** à chaque niveau de récursion, chaque élément subit O(1) opérations
+(un push ou une rotation, plus au plus une rotation inverse), et la taille des plages
+est divisée par 3 → log₃(n) niveaux → **O(n log n)** opérations.
+Mémoire : O(n) pour les piles + O(log n) de récursion.
+
+**Mesures** (aléatoire, vérifié avec `checker_linux`) : ≈ 655 opérations pour 100
+nombres (max 680), ≈ 4250 pour 500 nombres.
 
 ### 4. Adaptive
 
@@ -211,7 +244,7 @@ en mémoire.*
 ## 📚 Ressources
 
 - [Sujet officiel push_swap (42)](https://projects.intra.42.fr/projects/42cursus-push_swap)
-- [Radix sort — Wikipédia](https://fr.wikipedia.org/wiki/Tri_par_base)
+- [Quicksort — Wikipédia](https://fr.wikipedia.org/wiki/Tri_rapide)
 - [Notation Big-O — Wikipédia](https://fr.wikipedia.org/wiki/Comparaison_asymptotique)
 - [Inversions (mesure du désordre) — Wikipedia](https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics))
 - Visualiseur push_swap utilisé pour les tests

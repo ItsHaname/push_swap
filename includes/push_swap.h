@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: haait-ba <haait-ba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/30 16:09:46 by haait-ba          #+#    #+#             */
+/*   Updated: 2026/10/30 16:09:46 by haait-ba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 
@@ -39,12 +51,27 @@ typedef enum e_strat
 
 /* ========================= STRUCTS =========================== */
 
-/* val[0] = top of the stack, val[size - 1] = bottom */
+/* circular buffer: logical element i is val[(top + i) % cap]
+** i = 0 is the top of the stack, i = size - 1 is the bottom */
 typedef struct s_stack
 {
 	int		*val;
 	int		size;
+	int		cap;
+	int		top;
 }	t_stack;
+
+/* one quicksort partition: pivots p1 < p2 split the range in thirds */
+typedef struct s_part
+{
+	int		p1;
+	int		p2;
+	int		nbig;
+	int		nmid;
+	int		pushed;
+	int		whole;
+	int		rot;
+}	t_part;
 
 typedef struct s_ctx
 {
@@ -77,6 +104,8 @@ int		count_numbers(t_ctx *ctx, int argc, char **argv);
 void	parse_numbers(t_ctx *ctx, int argc, char **argv);
 int		safe_atoi(char *s, int *ok);
 int		has_duplicates(t_stack *s);
+int		count_words(char *str, char c);
+void	free_split(char **tab);
 
 /* ============ PRIMITIVES, NO OUTPUT  (Hanane) ================ */
 /* also used by the bonus checker */
@@ -113,6 +142,15 @@ int		find_min_pos(t_stack *s);
 int		find_max_pos(t_stack *s);
 void	bring_to_top_a(t_ctx *ctx, int pos);
 void	bring_to_top_b(t_ctx *ctx, int pos);
+void	rotate_both(t_ctx *ctx, int na, int nb);
+
+/* ============== QUICKSORT HELPERS (complex) ================= */
+
+t_part	make_part(int lo, int len, int whole);
+int		top_sorted(t_stack *s, int len, int asc);
+void	sort_top_a(t_ctx *ctx, int len);
+void	push_back_b(t_ctx *ctx, int len);
+void	unrotate(t_ctx *ctx, int na, int nb);
 
 /* ================== ALGORITHMS =============================== */
 

@@ -61,6 +61,18 @@ typedef struct s_stack
 	int		top;
 }	t_stack;
 
+/* one quicksort partition: pivots p1 < p2 split the range in thirds */
+typedef struct s_part
+{
+	int		p1;
+	int		p2;
+	int		nbig;
+	int		nmid;
+	int		pushed;
+	int		whole;
+	int		rot;
+}	t_part;
+
 typedef struct s_ctx
 {
 	t_stack	a;
@@ -130,6 +142,15 @@ int		find_min_pos(t_stack *s);
 int		find_max_pos(t_stack *s);
 void	bring_to_top_a(t_ctx *ctx, int pos);
 void	bring_to_top_b(t_ctx *ctx, int pos);
+void	rotate_both(t_ctx *ctx, int na, int nb);
+
+/* ============== QUICKSORT HELPERS (complex) ================= */
+
+t_part	make_part(int lo, int len, int whole);
+int		top_sorted(t_stack *s, int len, int asc);
+void	sort_top_a(t_ctx *ctx, int len);
+void	push_back_b(t_ctx *ctx, int len);
+void	unrotate(t_ctx *ctx, int na, int nb);
 
 /* ================== ALGORITHMS =============================== */
 

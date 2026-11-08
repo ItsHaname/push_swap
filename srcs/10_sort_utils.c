@@ -72,6 +72,38 @@ void	bring_to_top_a(t_ctx *ctx, int pos)
 	}
 }
 
+/* ===================== rotate_both ======================================
+** Do na rotations on a and nb rotations on b, merging them when possible.
+**   n > 0  -> n times "rotate"          (ra / rb)
+**   n < 0  -> -n times "reverse rotate" (rra / rrb)
+**   n = 0  -> nothing on that stack
+** Why: "ra" + "rb" (2 ops) has exactly the same effect as one "rr",
+** and "rra" + "rrb" (2 ops) the same as one "rrr". So while BOTH stacks
+** must turn in the SAME direction, we print one combined op instead of
+** two -> every merge saves 1 operation.
+** Example: na = 3, nb = 5  ->  rr rr rr rb rb   (5 ops instead of 8)
+**          na = -2, nb = -1 ->  rrr rra         (2 ops instead of 3)
+**          na = 2, nb = -2  ->  ra ra rrb rrb   (opposite directions:
+**                                                nothing can be merged)
+** Loop trick: "na > 0 && na--" checks first, THEN decrements, so each
+** loop runs exactly na times and leaves na at 0 (same for na++ / nb).
+** ======================================================================= */
+void	rotate_both(t_ctx *ctx, int na, int nb)
+{
+	while (na > 0 && nb > 0 && na-- && nb--)
+		rr(ctx);
+	while (na < 0 && nb < 0 && na++ && nb++)
+		rrr(ctx);
+	while (na > 0 && na--)
+		ra(ctx);
+	while (na < 0 && na++)
+		rra(ctx);
+	while (nb > 0 && nb--)
+		rb(ctx);
+	while (nb < 0 && nb++)
+		rrb(ctx);
+}
+
 void	bring_to_top_b(t_ctx *ctx, int pos)
 {
 	int	n;

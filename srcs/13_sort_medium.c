@@ -27,25 +27,26 @@ static void	push_chunks(t_ctx *ctx)
 	int	i;
 	int	range;
 	int	v;
-	int	rot;
 
 	i = 0;
-	rot = 0;
 	range = chunk_range(ctx->a.size);
 	while (ctx->a.size > 0)
 	{
 		v = ctx->a.val[ctx->a.top];
-		if (v > i + range)
-			rotate_both(ctx, 1, rot);
-		else
+		if (v <= i)
 		{
-			rotate_both(ctx, 0, rot);
 			pb(ctx);
+			rb(ctx);
+			i++;
 		}
-		rot = (v <= i && ctx->b.size > 1);
-		i += (v <= i + range);
+		else if (v <= i + range)
+		{
+			pb(ctx);
+			i++;
+		}
+		else
+			ra(ctx);
 	}
-	rotate_both(ctx, 0, rot);
 }
 
 static int	pos_of(t_stack *s, int v)
@@ -58,37 +59,12 @@ static int	pos_of(t_stack *s, int v)
 	return (i);
 }
 
-static int	cost(t_stack *s, int pos)
-{
-	if (pos <= s->size / 2)
-		return (pos);
-	return (s->size - pos);
-}
-
 void	sort_medium(t_ctx *ctx)
 {
-	int	max;
-	int	p_max;
-	int	p_sec;
-
 	push_chunks(ctx);
 	while (ctx->b.size > 0)
 	{
-		max = ctx->b.size - 1;
-		p_max = pos_of(&ctx->b, max);
-		p_sec = pos_of(&ctx->b, max - 1);
-		if (ctx->b.size > 1 && cost(&ctx->b, p_sec) < cost(&ctx->b, p_max))
-		{
-			bring_to_top_b(ctx, p_sec);
-			pa(ctx);
-			bring_to_top_b(ctx, pos_of(&ctx->b, max));
-			pa(ctx);
-			sa(ctx);
-		}
-		else
-		{
-			bring_to_top_b(ctx, p_max);
-			pa(ctx);
-		}
+		bring_to_top_b(ctx, pos_of(&ctx->b, ctx->b.size - 1));
+		pa(ctx);
 	}
 }

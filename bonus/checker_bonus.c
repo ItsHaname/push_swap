@@ -12,6 +12,27 @@
 
 #include "checker_bonus.h"
 
+static void	reject_flags(t_ctx *ctx, int argc, char **argv)
+{
+	int	i;
+
+	i = 1;
+	while (i < argc)
+	{
+		if (is_flag(argv[i]))
+			error_exit(ctx);
+		i++;
+	}
+}
+
+static void	print_result(t_ctx *ctx)
+{
+	if (is_sorted(&ctx->a) && ctx->b.size == 0)
+		write(1, "OK\n", 3);
+	else
+		write(1, "KO\n", 3);
+}
+
 int	main(int argc, char **argv)
 {
 	t_ctx	ctx;
@@ -21,6 +42,7 @@ int	main(int argc, char **argv)
 	if (argc < 2)
 		return (0);
 	init_ctx(&ctx);
+	reject_flags(&ctx, argc, argv);
 	n = count_numbers(&ctx, argc, argv);
 	if (n == 0)
 		return (0);
@@ -33,10 +55,7 @@ int	main(int argc, char **argv)
 		if (apply_op(&ctx, buf) == 0)
 			error_exit(&ctx);
 	}
-	if (is_sorted(&ctx.a) && ctx.b.size == 0)
-		write(1, "OK\n", 3);
-	else
-		write(1, "KO\n", 3);
+	print_result(&ctx);
 	free_ctx(&ctx);
 	return (0);
 }

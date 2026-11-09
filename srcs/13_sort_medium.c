@@ -49,22 +49,12 @@ static void	push_chunks(t_ctx *ctx)
 	}
 }
 
-static int	pos_of(t_stack *s, int v)
-{
-	int	i;
-
-	i = 0;
-	while (i < s->size && s->val[(s->top + i) % s->cap] != v)
-		i++;
-	return (i);
-}
-
 void	sort_medium(t_ctx *ctx)
 {
 	push_chunks(ctx);
 	while (ctx->b.size > 0)
 	{
-		bring_to_top_b(ctx, pos_of(&ctx->b, ctx->b.size - 1));
+		bring_to_top_b(ctx, find_max_pos(&ctx->b));
 		pa(ctx);
 	}
 }

@@ -12,94 +12,57 @@
 
 #include "push_swap.h"
 
-static void	radix_a(t_ctx *ctx, int lo, int len);
-static void	radix_b(t_ctx *ctx, int lo, int len);
-
-static void	bucket_a(t_ctx *ctx, t_radix *r, int lo)
+static int	max_bits(int n)
 {
-	int	v;
+	int	bits;
 
-	while (r->pushed < r->d2 - lo)
+	bits = 0;
+	while (((n - 1) >> bits) != 0)
+		bits++;
+	return (bits);
+}
+
+static void	push_zeros(t_ctx *ctx, int bit)
+{
+	int	n;
+
+	n = ctx->a.size;
+	while (n > 0)
 	{
-		v = ctx->a.val[ctx->a.top];
-		if (v >= r->d2 && ++r->nbig)
-		{
-			if (r->rot)
-				rr(ctx);
-			else
-				ra(ctx);
-		}
-		else if (++r->pushed)
-		{
-			if (r->rot)
-				rb(ctx);
+		if (((ctx->a.val[ctx->a.top] >> bit) & 1) == 0)
 			pb(ctx);
-		}
-		r->rot = (v >= r->d1 && v < r->d2);
-		r->nmid += r->rot;
+		else
+			ra(ctx);
+		n--;
 	}
-	if (r->rot)
-		rb(ctx);
 }
 
-static void	bucket_b(t_ctx *ctx, t_radix *r, int lo, int len)
+static void	pull_back(t_ctx *ctx, int next_bit, int last)
 {
-	int	v;
+	int	n;
 
-	while (r->pushed < lo + len - r->d1)
+	n = ctx->b.size;
+	while (n > 0)
 	{
-		v = ctx->b.val[ctx->b.top];
-		if (v < r->d1 && ++r->nbig)
-		{
-			if (r->rot)
-				rr(ctx);
-			else
-				rb(ctx);
-		}
-		else if (++r->pushed)
-		{
-			if (r->rot)
-				ra(ctx);
+		if (!last && ((ctx->b.val[ctx->b.top] >> next_bit) & 1) == 0)
+			rb(ctx);
+		else
 			pa(ctx);
-		}
-		r->rot = (v >= r->d1 && v < r->d2);
-		r->nmid += r->rot;
+		n--;
 	}
-	if (r->rot)
-		ra(ctx);
-}
-
-static void	radix_a(t_ctx *ctx, int lo, int len)
-{
-	t_radix	r;
-
-	if (top_sorted(&ctx->a, len, 1))
-		return ;
-	if (len <= 3)
-		return (sort_top_a(ctx, len));
-	r = make_radix(lo, len, ctx->a.size == len);
-	bucket_a(ctx, &r, lo);
-	unrotate(ctx, r.nbig * !r.whole, r.nmid * (ctx->b.size != r.nmid));
-	radix_a(ctx, r.d2, lo + len - r.d2);
-	radix_b(ctx, r.d1, r.d2 - r.d1);
-	radix_b(ctx, lo, r.d1 - lo);
-}
-
-static void	radix_b(t_ctx *ctx, int lo, int len)
-{
-	t_radix	r;
-
-	if (top_sorted(&ctx->b, len, 0) || len <= 3)
-		return (push_back_b(ctx, len));
-	r = make_radix(lo, len, ctx->b.size == len);
-	bucket_b(ctx, &r, lo, len);
-	radix_a(ctx, r.d2, lo + len - r.d2);
-	unrotate(ctx, r.nmid, r.nbig * !r.whole);
-	radix_a(ctx, r.d1, r.d2 - r.d1);
-	radix_b(ctx, lo, r.d1 - lo);
 }
 
 void	sort_complex(t_ctx *ctx)
 {
-	radix_a(ctx, 0, ctx->a.size);
+	int	bit;
+	int	bits;
+
+	bits = max_bits(ctx->a.size);
+	bit = 0;
+	while (bit < bits && !(ctx->b.size == 0 && is_sorted(&ctx->a)))
+	{
+		push_zeros(ctx, bit);
+		pull_back(ctx, bit + 1, bit + 1 == bits);
+		bit++;
+	}
 }

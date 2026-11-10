@@ -52,17 +52,6 @@ typedef struct s_stack
 	int		top;
 }	t_stack;
 
-typedef struct s_radix
-{
-	int		d1;
-	int		d2;
-	int		nbig;
-	int		nmid;
-	int		pushed;
-	int		whole;
-	int		rot;
-}	t_radix;
-
 typedef struct s_ctx
 {
 	t_stack	a;
@@ -118,12 +107,6 @@ int		find_max_pos(t_stack *s);
 void	bring_to_top_a(t_ctx *ctx, int pos);
 void	bring_to_top_b(t_ctx *ctx, int pos);
 void	rotate_both(t_ctx *ctx, int na, int nb);
-
-t_radix	make_radix(int lo, int len, int whole);
-int		top_sorted(t_stack *s, int len, int asc);
-void	sort_top_a(t_ctx *ctx, int len);
-void	push_back_b(t_ctx *ctx, int len);
-void	unrotate(t_ctx *ctx, int na, int nb);
 
 void	sort_small(t_ctx *ctx);
 void	sort_simple(t_ctx *ctx);

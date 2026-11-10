@@ -16,7 +16,7 @@ COMMON		= srcs/01_stack.c srcs/02_parsing.c srcs/03_parsing_utils.c \
 			  srcs/04_ops_swap.c srcs/05_ops_push.c srcs/06_ops_rotate.c \
 			  srcs/07_ops_rev_rotate.c srcs/08_index.c srcs/09_disorder.c \
 			  srcs/10_sort_utils.c srcs/11_sort_small.c srcs/12_sort_simple.c \
-			  srcs/13_sort_medium.c srcs/14_sort_complex.c srcs/14_complex_utils.c \
+			  srcs/13_sort_medium.c srcs/14_sort_complex.c \
 			  srcs/15_flags.c srcs/16_sort_adaptive.c srcs/17_bench.c
 
 SRCS		= srcs/00_main.c $(COMMON)

@@ -72,22 +72,6 @@ void	bring_to_top_a(t_ctx *ctx, int pos)
 	}
 }
 
-void	rotate_both(t_ctx *ctx, int na, int nb)
-{
-	while (na > 0 && nb > 0 && na-- && nb--)
-		rr(ctx);
-	while (na < 0 && nb < 0 && na++ && nb++)
-		rrr(ctx);
-	while (na > 0 && na--)
-		ra(ctx);
-	while (na < 0 && na++)
-		rra(ctx);
-	while (nb > 0 && nb--)
-		rb(ctx);
-	while (nb < 0 && nb++)
-		rrb(ctx);
-}
-
 void	bring_to_top_b(t_ctx *ctx, int pos)
 {
 	int	n;

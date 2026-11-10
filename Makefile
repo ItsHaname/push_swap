@@ -11,7 +11,6 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 
 HEADER		= includes/push_swap.h includes/checker_bonus.h
 
-# files shared by push_swap and checker (everything except main.c)
 COMMON		= srcs/01_stack.c srcs/02_parsing.c srcs/03_parsing_utils.c \
 			  srcs/04_ops_swap.c srcs/05_ops_push.c srcs/06_ops_rotate.c \
 			  srcs/07_ops_rev_rotate.c srcs/08_index.c srcs/09_disorder.c \

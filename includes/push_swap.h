@@ -106,7 +106,6 @@ int		find_min_pos(t_stack *s);
 int		find_max_pos(t_stack *s);
 void	bring_to_top_a(t_ctx *ctx, int pos);
 void	bring_to_top_b(t_ctx *ctx, int pos);
-void	rotate_both(t_ctx *ctx, int na, int nb);
 
 void	sort_small(t_ctx *ctx);
 void	sort_simple(t_ctx *ctx);

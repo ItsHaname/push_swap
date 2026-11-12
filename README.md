@@ -206,6 +206,8 @@ Nearly sorted inputs (disorder < 20%, one example each), where adaptive picks **
 | 500 | 13.69% | 11402 | 2807 | 6784 | simple → 11402 |
 
 ## Project structure
+<img width="1041" height="822" alt="image" src="https://github.com/user-attachments/assets/5a29817b-59e6-4f64-a4de-09837adb3705" />
+<img width="861" height="876" alt="image" src="https://github.com/user-attachments/assets/81d3eff7-2514-416a-b9eb-c1064ea0ac7f" />
 
 ```
 push_swap/
